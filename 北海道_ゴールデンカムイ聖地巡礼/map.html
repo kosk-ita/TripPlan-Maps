@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_70afdd2d19b4acf91bd7d84433fb36e4 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    <div style="position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:1000;background:white;padding:6px 16px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.2);font-size:14px;font-weight:bold;font-family:sans-serif;white-space:nowrap">北海道 ゴールデンカムイ聖地巡礼プラン（モジュールA：札幌エリア）</div>
+    <div style="position:fixed;bottom:20px;right:10px;z-index:1000;background:white;padding:10px 14px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.2);font-size:13px;font-family:sans-serif;max-width:160px"><b style="display:block;margin-bottom:6px">凡例</b><div style="display:flex;align-items:center;gap:6px;margin:3px 0"><div style="background:Blue;width:14px;height:14px;border-radius:50%;border:1px solid white;box-shadow:0 0 2px rgba(0,0,0,0.3);flex-shrink:0"></div><span>🏛 観光スポット</span></div><div style="display:flex;align-items:center;gap:6px;margin:3px 0"><div style="background:Gray;width:14px;height:14px;border-radius:50%;border:1px solid white;box-shadow:0 0 2px rgba(0,0,0,0.3);flex-shrink:0"></div><span>📍 その他</span></div></div>
+    
+            <div class="folium-map" id="map_70afdd2d19b4acf91bd7d84433fb36e4" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_70afdd2d19b4acf91bd7d84433fb36e4 = L.map(
+                "map_70afdd2d19b4acf91bd7d84433fb36e4",
+                {
+                    center: [0.0, 0.0],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 1,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_970f0cdb3f917bf57d87c94c8c82e31d = L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_970f0cdb3f917bf57d87c94c8c82e31d.addTo(map_70afdd2d19b4acf91bd7d84433fb36e4);
+        
+    
+            var poly_line_84aa6e01e13ac1026f913a8a1c11ac52 = L.polyline(
+                [[42.786787, 141.6829598], [43.0625537, 141.3536448], [43.0639655, 141.3480242], [43.0714021, 141.3690082]],
+                {"bubblingMouseEvents": true, "color": "Green", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "Green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_70afdd2d19b4acf91bd7d84433fb36e4);
+        
+    
+            poly_line_84aa6e01e13ac1026f913a8a1c11ac52.bindTooltip(
+                `<div>
+                     Day A-1 移動経路
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var poly_line_d6826a3e17e54b62199b983099d88d87 = L.polyline(
+                [[43.052234, 141.49706], [42.5591, 141.3568]],
+                {"bubblingMouseEvents": true, "color": "Green", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "Green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_70afdd2d19b4acf91bd7d84433fb36e4);
+        
+    
+            poly_line_d6826a3e17e54b62199b983099d88d87.bindTooltip(
+                `<div>
+                     Day A-3 移動経路
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_8c2bc583aa329da7217f5e54e3abfec3 = L.marker(
+                [43.0460191, 141.4985449],
+                {
+}
+            ).addTo(map_70afdd2d19b4acf91bd7d84433fb36e4);
+        
+    
+            var div_icon_9fbf3dd140d515402654b067ad9fb35b = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e1\u003c/div\u003e\n    ",
+  "iconSize": [26, 26],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_6cb013dfa7963e6ad9c922c10f55f117 = L.popup({
+  "maxWidth": 220,
+});
+
+        
+            
+                var html_a8de0d591269f069bdf191d131dbd65e = $(`<div id="html_a8de0d591269f069bdf191d131dbd65e" style="width: 100.0%; height: 100.0%;"><b>🏛 北海道開拓の村</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>🕐 09:30 ⏱ 420分<br><hr style='margin:4px 0'>最重要聖地。全52棟のうち多数の建物がほぼそのまま登場。旧武器庫、旧網走刑務所庁舎、旧農商務省地質調査所など多数</div>`)[0];
+                popup_6cb013dfa7963e6ad9c922c10f55f117.setContent(html_a8de0d591269f069bdf191d131dbd65e);
+            
+        
+
+        marker_8c2bc583aa329da7217f5e54e3abfec3.bindPopup(popup_6cb013dfa7963e6ad9c922c10f55f117)
+        ;
+
+        
+    
+    
+            marker_8c2bc583aa329da7217f5e54e3abfec3.bindTooltip(
+                `<div>
+                     1. 北海道開拓の村
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_8c2bc583aa329da7217f5e54e3abfec3.setIcon(div_icon_9fbf3dd140d515402654b067ad9fb35b);
+            
+    
+            var marker_a5b1c3ed169d4241df2cd50afbebb046 = L.marker(
+                [43.052234, 141.49706],
+                {
+}
+            ).addTo(map_70afdd2d19b4acf91bd7d84433fb36e4);
+        
+    
+            var div_icon_8472a30799b23c5924576d578e877aeb = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e2\u003c/div\u003e\n    ",
+  "iconSize": [26, 26],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_d11aba8dc13ffbd67a04ce9dd2281743 = L.popup({
+  "maxWidth": 220,
+});
+
+        
+            
+                var html_b701b4a02b7f369e717342b6fbe90db6 = $(`<div id="html_b701b4a02b7f369e717342b6fbe90db6" style="width: 100.0%; height: 100.0%;"><b>🏛 北海道博物館</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>🕐 09:30 ⏱ 135分<br><hr style='margin:4px 0'>アイヌ文化の常設展示、ゴールデンカムイ関連資料充実。開拓の村に隣接</div>`)[0];
+                popup_d11aba8dc13ffbd67a04ce9dd2281743.setContent(html_b701b4a02b7f369e717342b6fbe90db6);
+            
+        
+
+        marker_a5b1c3ed169d4241df2cd50afbebb046.bindPopup(popup_d11aba8dc13ffbd67a04ce9dd2281743)
+        ;
+
+        
+    
+    
+            marker_a5b1c3ed169d4241df2cd50afbebb046.bindTooltip(
+                `<div>
+                     2. 北海道博物館
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_a5b1c3ed169d4241df2cd50afbebb046.setIcon(div_icon_8472a30799b23c5924576d578e877aeb);
+            
+    
+            var marker_ac8b1986a2ea5c00b0ea9fc365026b62 = L.marker(
+                [43.0625537, 141.3536448],
+                {
+}
+            ).addTo(map_70afdd2d19b4acf91bd7d84433fb36e4);
+        
+    
+            var div_icon_a91b7e5b549996f7ba3785fa25f16630 = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e3\u003c/div\u003e\n    ",
+  "iconSize": [26, 26],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_b1a9a4a96a1fd93cede2337a93d194e1 = L.popup({
+  "maxWidth": 220,
+});
+
+        
+            
+                var html_3bc9da46768c3cbee0af74deba1e16b8 = $(`<div id="html_3bc9da46768c3cbee0af74deba1e16b8" style="width: 100.0%; height: 100.0%;"><b>🏛 札幌市時計台</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>⏱ 30分<br><hr style='margin:4px 0'>札幌編（第24巻〜）の重要舞台。外観が作中に忠実に描かれている</div>`)[0];
+                popup_b1a9a4a96a1fd93cede2337a93d194e1.setContent(html_3bc9da46768c3cbee0af74deba1e16b8);
+            
+        
+
+        marker_ac8b1986a2ea5c00b0ea9fc365026b62.bindPopup(popup_b1a9a4a96a1fd93cede2337a93d194e1)
+        ;
+
+        
+    
+    
+            marker_ac8b1986a2ea5c00b0ea9fc365026b62.bindTooltip(
+                `<div>
+                     3. 札幌市時計台
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_ac8b1986a2ea5c00b0ea9fc365026b62.setIcon(div_icon_a91b7e5b549996f7ba3785fa25f16630);
+            
+    
+            var marker_db19bf69a834ba754d74356cae318694 = L.marker(
+                [43.0714021, 141.3690082],
+                {
+}
+            ).addTo(map_70afdd2d19b4acf91bd7d84433fb36e4);
+        
+    
+            var div_icon_f048c99978804a36b9aa5fd71e7fb868 = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e4\u003c/div\u003e\n    ",
+  "iconSize": [26, 26],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_a0441a3dbf92b6f83b3e119c8e51945f = L.popup({
+  "maxWidth": 220,
+});
+
+        
+            
+                var html_d0b32b16ba45b91886fd13961b340fca = $(`<div id="html_d0b32b16ba45b91886fd13961b340fca" style="width: 100.0%; height: 100.0%;"><b>🏛 サッポロビール博物館</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>⏱ 60分<br><hr style='margin:4px 0'>札幌編クライマックスの舞台。建物外観が作中そのまま。プレミアムツアーがおすすめ</div>`)[0];
+                popup_a0441a3dbf92b6f83b3e119c8e51945f.setContent(html_d0b32b16ba45b91886fd13961b340fca);
+            
+        
+
+        marker_db19bf69a834ba754d74356cae318694.bindPopup(popup_a0441a3dbf92b6f83b3e119c8e51945f)
+        ;
+
+        
+    
+    
+            marker_db19bf69a834ba754d74356cae318694.bindTooltip(
+                `<div>
+                     4. サッポロビール博物館
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_db19bf69a834ba754d74356cae318694.setIcon(div_icon_f048c99978804a36b9aa5fd71e7fb868);
+            
+    
+            var marker_c0842cf99671e72871ca94c59c660769 = L.marker(
+                [42.5591, 141.3568],
+                {
+}
+            ).addTo(map_70afdd2d19b4acf91bd7d84433fb36e4);
+        
+    
+            var div_icon_4d2a1db456a391822dfdfc682aedfe4a = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e5\u003c/div\u003e\n    ",
+  "iconSize": [26, 26],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_75eee3b6156f4052c360be3cebe76498 = L.popup({
+  "maxWidth": 220,
+});
+
+        
+            
+                var html_c0f2b45ddbb4c90d4bb3f9e3c1386464 = $(`<div id="html_c0f2b45ddbb4c90d4bb3f9e3c1386464" style="width: 100.0%; height: 100.0%;"><b>🏛 ウポポイ（民族共生象徴空間）</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>🕐 14:30 ⏱ 135分<br><hr style='margin:4px 0'>2020年開館の国立アイヌ博物館。作品世界の理解を深めるなら必訪（札幌から南へ約60分・白老）</div>`)[0];
+                popup_75eee3b6156f4052c360be3cebe76498.setContent(html_c0f2b45ddbb4c90d4bb3f9e3c1386464);
+            
+        
+
+        marker_c0842cf99671e72871ca94c59c660769.bindPopup(popup_75eee3b6156f4052c360be3cebe76498)
+        ;
+
+        
+    
+    
+            marker_c0842cf99671e72871ca94c59c660769.bindTooltip(
+                `<div>
+                     5. ウポポイ（民族共生象徴空間）
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_c0842cf99671e72871ca94c59c660769.setIcon(div_icon_4d2a1db456a391822dfdfc682aedfe4a);
+            
+    
+            var marker_a0b2565712e07d4281e061f62134ded1 = L.marker(
+                [43.0639655, 141.3480242],
+                {
+}
+            ).addTo(map_70afdd2d19b4acf91bd7d84433fb36e4);
+        
+    
+            var div_icon_6e48ad264b9c22d2adbe1dee959ba5cf = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e6\u003c/div\u003e\n    ",
+  "iconSize": [26, 26],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_703172485be96d9f974aafe1ed40f10d = L.popup({
+  "maxWidth": 220,
+});
+
+        
+            
+                var html_eed6d7ddb49e788d5d6ba61b7bf956e7 = $(`<div id="html_eed6d7ddb49e788d5d6ba61b7bf956e7" style="width: 100.0%; height: 100.0%;"><b>🏛 旧道庁赤レンガ庁舎</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br><hr style='margin:4px 0'>外観・雰囲気を楽しむ。時計台から徒歩圏内</div>`)[0];
+                popup_703172485be96d9f974aafe1ed40f10d.setContent(html_eed6d7ddb49e788d5d6ba61b7bf956e7);
+            
+        
+
+        marker_a0b2565712e07d4281e061f62134ded1.bindPopup(popup_703172485be96d9f974aafe1ed40f10d)
+        ;
+
+        
+    
+    
+            marker_a0b2565712e07d4281e061f62134ded1.bindTooltip(
+                `<div>
+                     6. 旧道庁赤レンガ庁舎
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_a0b2565712e07d4281e061f62134ded1.setIcon(div_icon_6e48ad264b9c22d2adbe1dee959ba5cf);
+            
+    
+            var marker_22e4b76a8010d710df502df2d2053e88 = L.marker(
+                [42.786787, 141.6829598],
+                {
+}
+            ).addTo(map_70afdd2d19b4acf91bd7d84433fb36e4);
+        
+    
+            var div_icon_70d84d7e7b9e2a128bc9aa739a16628c = L.divIcon({
+  "html": "\n    \u003cdiv style=\"\n        background-color: Gray;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e7\u003c/div\u003e\n    ",
+  "iconSize": [26, 26],
+  "iconAnchor": [13, 13],
+  "className": "empty",
+});
+        
+    
+        var popup_167535d01e4902c37a524872535ba30d = L.popup({
+  "maxWidth": 220,
+});
+
+        
+            
+                var html_b6ad09c69c0e36cfebb2fa89e46666f3 = $(`<div id="html_b6ad09c69c0e36cfebb2fa89e46666f3" style="width: 100.0%; height: 100.0%;"><b>📍 新千歳空港</b><br><span style='color:#666;font-size:11px'>その他</span><br><hr style='margin:4px 0'>東京発着の拠点空港。快速エアポートで札幌駅まで約40分</div>`)[0];
+                popup_167535d01e4902c37a524872535ba30d.setContent(html_b6ad09c69c0e36cfebb2fa89e46666f3);
+            
+        
+
+        marker_22e4b76a8010d710df502df2d2053e88.bindPopup(popup_167535d01e4902c37a524872535ba30d)
+        ;
+
+        
+    
+    
+            marker_22e4b76a8010d710df502df2d2053e88.bindTooltip(
+                `<div>
+                     7. 新千歳空港
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_22e4b76a8010d710df502df2d2053e88.setIcon(div_icon_70d84d7e7b9e2a128bc9aa739a16628c);
+            
+    
+            map_70afdd2d19b4acf91bd7d84433fb36e4.fitBounds(
+                [[42.786787, 141.6829598], [43.0625537, 141.3536448], [43.0639655, 141.3480242], [43.0714021, 141.3690082], [43.052234, 141.49706], [42.5591, 141.3568], [43.0460191, 141.4985449], [43.052234, 141.49706], [43.0625537, 141.3536448], [43.0714021, 141.3690082], [42.5591, 141.3568], [43.0639655, 141.3480242], [42.786787, 141.6829598]],
+                {}
+            );
+        
+</script>
+</html>
