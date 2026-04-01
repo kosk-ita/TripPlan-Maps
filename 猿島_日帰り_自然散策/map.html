@@ -1,665 +1,172 @@
 <!DOCTYPE html>
 <html>
 <head>
-    
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
-    
-            <meta name="viewport" content="width=device-width,
-                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-            <style>
-                #map_66daacc536417c857f4e031865c3ce59 {
-                    position: relative;
-                    width: 100.0%;
-                    height: 100.0%;
-                    left: 0.0%;
-                    top: 0.0%;
-                }
-                .leaflet-container { font-size: 1rem; }
-            </style>
-
-            <style>html, body {
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-            }
-            </style>
-
-            <style>#map {
-                position:absolute;
-                top:0;
-                bottom:0;
-                right:0;
-                left:0;
-                }
-            </style>
-
-            <script>
-                L_NO_TOUCH = false;
-                L_DISABLE_3D = false;
-            </script>
-
-        
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body { margin: 0; height: 100%; font-family: sans-serif; }
+    #map { height: 100%; }
+    #title {
+      position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+      z-index: 1000; background: white; padding: 6px 16px;
+      border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      font-size: 14px; font-weight: bold; white-space: nowrap;
+    }
+    #legend {
+      position: fixed; bottom: 20px; right: 10px; z-index: 1000;
+      background: white; padding: 10px 14px; border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2); font-size: 13px; max-width: 160px;
+    }
+    #legend b { display: block; margin-bottom: 6px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; margin: 3px 0; }
+    .legend-dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 1px solid white; box-shadow: 0 0 2px rgba(0,0,0,0.3); flex-shrink: 0;
+    }
+    .popup { padding: 8px 10px; max-width: 240px; font-size: 13px; line-height: 1.6; }
+    .popup hr { margin: 4px 0; border: none; border-top: 1px solid #eee; }
+    .popup a { font-size: 11px; color: #1a73e8; text-decoration: none; }
+    .popup .sub { color: #666; font-size: 11px; }
+  </style>
 </head>
 <body>
-    
-    <div style="position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:1000;background:white;padding:6px 16px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.2);font-size:14px;font-weight:bold;font-family:sans-serif;white-space:nowrap">猿島 日帰り 自然散策</div>
-    <div style="position:fixed;bottom:20px;right:10px;z-index:1000;background:white;padding:10px 14px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.2);font-size:13px;font-family:sans-serif;max-width:160px"><b style="display:block;margin-bottom:6px">凡例</b><div style="display:flex;align-items:center;gap:6px;margin:3px 0"><div style="background:Blue;width:14px;height:14px;border-radius:50%;border:1px solid white;box-shadow:0 0 2px rgba(0,0,0,0.3);flex-shrink:0"></div><span>🏛 観光スポット</span></div><div style="display:flex;align-items:center;gap:6px;margin:3px 0"><div style="background:Orange;width:14px;height:14px;border-radius:50%;border:1px solid white;box-shadow:0 0 2px rgba(0,0,0,0.3);flex-shrink:0"></div><span>🍽 食事</span></div><div style="display:flex;align-items:center;gap:6px;margin:3px 0"><div style="background:Green;width:14px;height:14px;border-radius:50%;border:1px solid white;box-shadow:0 0 2px rgba(0,0,0,0.3);flex-shrink:0"></div><span>🚃 移動</span></div></div>
-    
-            <div class="folium-map" id="map_66daacc536417c857f4e031865c3ce59" ></div>
-        
+  <div id="title">猿島 日帰り 自然散策</div>
+  <div id="legend"><b>凡例</b><div class="legend-item"><div class="legend-dot" style="background:Blue"></div><span>🏛 観光スポット</span></div><div class="legend-item"><div class="legend-dot" style="background:Orange"></div><span>🍽 食事</span></div><div class="legend-item"><div class="legend-dot" style="background:Green"></div><span>🚃 移動</span></div><div class="legend-item"><div class="legend-dot" style="background:DeepPink"></div><span>🛍 ショッピング</span></div></div>
+  <div id="map"></div>
+  <script>
+    const FEATURES = [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [139.6226361, 35.4660109]}, "properties": {"name": "横浜駅（出発・帰着）", "group": "移動", "order": 1, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "京急本線（快特）で横須賀中央駅へ。所要約28分・運賃403円/人（IC）", "visit_time": "09:00", "stay_minutes": 10}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [139.6705081, 35.2792315]}, "properties": {"name": "横須賀中央駅", "group": "移動", "order": 2, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "京急本線で到着。三笠公園まで徒歩約15分", "visit_time": "09:28", "stay_minutes": 15}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [139.6740469, 35.2853818]}, "properties": {"name": "三笠公園（三笠桟橋）", "group": "移動", "order": 3, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "猿島行きフェリー乗り場。乗船料1,500円＋入島料500円（横須賀市外料金）。毎時30分発・所要約10分", "visit_time": "09:43", "stay_minutes": 47}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [139.6940563, 35.286067]}, "properties": {"name": "猿島", "group": "観光スポット", "order": 4, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "東京湾唯一の無人島。明治時代のレンガトンネル（ラピュタの道）・愛のトンネル・砲台跡・日蓮洞窟・展望広場など。周囲約1.6km・散策約90分。", "visit_time": "10:40", "stay_minutes": 95}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [139.6730907, 35.2839737]}, "properties": {"name": "よこすか海軍カレー本舗", "group": "食事", "order": 5, "_umap_options": {"color": "Orange", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "横須賀中央駅東口すぐ。明治時代の海軍レシピを復元したご当地グルメ。スペシャルビーフカレー1,650円。", "visit_time": "12:30", "stay_minutes": 60}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [139.6589781, 35.2834283]}, "properties": {"name": "ヴェルニー公園", "group": "観光スポット", "order": 6, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "フランス庭園様式の海沿い公園。バラ約130品種・1,300株。ボードウォークから護衛艦を間近に鑑賞できる。", "visit_time": "13:30", "stay_minutes": 40}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [139.6743413, 35.2851844]}, "properties": {"name": "記念艦三笠", "group": "観光スポット", "order": 7, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "日露戦争で活躍した戦艦三笠を保存・公開。入艦料600円/人。三笠公園内、猿島を対岸に眺められる。", "visit_time": "14:10", "stay_minutes": 50}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [139.6657485, 35.2818853]}, "properties": {"name": "どぶ板通り商店街", "group": "ショッピング", "order": 8, "_umap_options": {"color": "DeepPink", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "米海軍基地に隣接する個性的な商店街。スカジャン・アメリカングッズの専門店が立ち並ぶ横須賀カルチャーの発信地。", "visit_time": "15:00", "stay_minutes": 30}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[139.6226361, 35.4660109], [139.6705081, 35.2792315], [139.6740469, 35.2853818], [139.6940563, 35.286067], [139.6730907, 35.2839737], [139.6589781, 35.2834283], [139.6743413, 35.2851844], [139.6657485, 35.2818853]]}, "properties": {"name": "Day 1 移動経路", "transport": "複合", "_umap_options": {"color": "Green", "weight": 4, "opacity": 0.8, "dashArray": null}}}];
+
+    const GROUP_ICONS = {
+      "観光スポット": "🏛", "食事": "🍽", "宿泊": "🏨",
+      "移動": "🚃", "ショッピング": "🛍", "その他": "📍"
+    };
+
+    function makeMarkerSvg(color, label) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+        <circle cx="14" cy="14" r="13" fill="${color}" stroke="white" stroke-width="2.5"/>
+        <text x="14" y="18" text-anchor="middle" fill="white" font-size="11"
+              font-weight="bold" font-family="sans-serif">${label}</text>
+      </svg>`;
+      return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+    }
+
+    function makePopupContent(props, lat, lon) {
+      const name = props.name || "";
+      const group = props.group || "";
+      const icon = GROUP_ICONS[group] || "📍";
+      const visitTime = props.visit_time || "";
+      const stayMin = props.stay_minutes || "";
+      const desc = (props.description || "").replace(/\n/g, "<br>");
+      const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(name)}/@${lat},${lon},17z`;
+      let html = `<div class="popup"><b>${icon} ${name}</b>`;
+      if (group) html += `<br><span class="sub">${group}</span>`;
+      const times = [visitTime ? `🕐 ${visitTime}` : "", stayMin ? `⏱ ${stayMin}分` : ""].filter(Boolean);
+      if (times.length) html += `<br>${times.join(" ")}`;
+      if (desc) html += `<hr>${desc}`;
+      html += `<hr><a href="${mapsUrl}" target="_blank">📍 Google Mapsで開く →</a>`;
+      html += "</div>";
+      return html;
+    }
+
+    function getDirectionsMode(transport) {
+      if (!transport) return null;
+      if (/電車|鉄道|列車|新幹線/.test(transport) && !/船|フェリー/.test(transport)) return "TRANSIT";
+      if (/^(自動車|車|ドライブ)$/.test(transport)) return "DRIVING";
+      if (/^徒歩$/.test(transport)) return "WALKING";
+      return null;
+    }
+
+    function addPolyline(map, coords, umap) {
+      const path = coords.map(([lon, lat]) => ({ lat, lng: lon }));
+      const dashSymbol = umap.dashArray
+        ? [{ icon: { path: "M 0,-1 0,1", strokeOpacity: 1, scale: 3 }, offset: "0", repeat: "12px" }]
+        : undefined;
+      new google.maps.Polyline({
+        path, map,
+        strokeColor: umap.color || "Gray",
+        strokeWeight: umap.weight || 3,
+        strokeOpacity: dashSymbol ? 0 : (umap.opacity || 0.7),
+        icons: dashSymbol,
+      });
+    }
+
+    function addRoute(map, coords, props) {
+      const umap = props._umap_options || {};
+      const mode = getDirectionsMode(props.transport);
+      if (!mode) { addPolyline(map, coords, umap); return; }
+
+      const origin = { lat: coords[0][1], lng: coords[0][0] };
+      const dest = { lat: coords[coords.length - 1][1], lng: coords[coords.length - 1][0] };
+      const waypoints = coords.slice(1, -1).map(([lon, lat]) => ({
+        location: new google.maps.LatLng(lat, lon), stopover: false,
+      }));
+
+      new google.maps.DirectionsService().route({
+        origin, destination: dest, waypoints,
+        travelMode: google.maps.TravelMode[mode],
+        optimizeWaypoints: false,
+      }, (result, status) => {
+        if (status === "OK") {
+          new google.maps.DirectionsRenderer({
+            map, directions: result, suppressMarkers: true,
+            polylineOptions: {
+              strokeColor: umap.color || "DarkGray",
+              strokeWeight: umap.weight || 3,
+              strokeOpacity: umap.opacity || 0.7,
+            },
+          });
+        } else {
+          addPolyline(map, coords, umap);
+        }
+      });
+    }
+
+    function initMap() {
+      const map = new google.maps.Map(document.getElementById("map"), {
+        mapTypeId: "roadmap",
+        mapTypeControl: true,
+        fullscreenControl: true,
+      });
+      const infoWindow = new google.maps.InfoWindow();
+      const bounds = new google.maps.LatLngBounds();
+
+      const points = FEATURES.filter(f => f.geometry.type === "Point");
+      const lines = FEATURES.filter(f => f.geometry.type === "LineString");
+
+      for (const f of lines) {
+        addRoute(map, f.geometry.coordinates, f.properties || {});
+        f.geometry.coordinates.forEach(([lon, lat]) => bounds.extend({ lat, lng: lon }));
+      }
+
+      const sorted = [...points].sort((a, b) =>
+        (a.properties?.order || 0) - (b.properties?.order || 0)
+      );
+      for (const f of sorted) {
+        const [lon, lat] = f.geometry.coordinates;
+        bounds.extend({ lat, lng: lon });
+        const props = f.properties || {};
+        const color = (props._umap_options || {}).color || "Blue";
+        const order = props.order || "";
+        const marker = new google.maps.Marker({
+          position: { lat, lng: lon }, map,
+          title: props.name || "",
+          icon: {
+            url: makeMarkerSvg(color, order),
+            scaledSize: new google.maps.Size(28, 28),
+            anchor: new google.maps.Point(14, 14),
+          },
+        });
+        marker.addListener("click", () => {
+          infoWindow.setContent(makePopupContent(props, lat, lon));
+          infoWindow.open(map, marker);
+        });
+      }
+
+      if (!bounds.isEmpty()) map.fitBounds(bounds);
+    }
+  </script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPRJUGIu40HZyc1Sr_IY3Gg2JKXwaxXnk&callback=initMap&language=ja&region=JP"
+    async defer></script>
 </body>
-<script>
-    
-    
-            var map_66daacc536417c857f4e031865c3ce59 = L.map(
-                "map_66daacc536417c857f4e031865c3ce59",
-                {
-                    center: [0.0, 0.0],
-                    crs: L.CRS.EPSG3857,
-                    ...{
-  "zoom": 1,
-  "zoomControl": true,
-  "preferCanvas": false,
-}
-
-                }
-            );
-
-            
-
-        
-    
-            var tile_layer_04c1e604582726213d59b0a7c0a42ed7 = L.tileLayer(
-                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                {
-  "minZoom": 0,
-  "maxZoom": 18,
-  "maxNativeZoom": 18,
-  "noWrap": false,
-  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
-  "subdomains": "abc",
-  "detectRetina": false,
-  "tms": false,
-  "opacity": 1,
-}
-
-            );
-        
-    
-            tile_layer_04c1e604582726213d59b0a7c0a42ed7.addTo(map_66daacc536417c857f4e031865c3ce59);
-        
-    
-            var poly_line_8252da080f262af30b4d37adf57a707b = L.polyline(
-                [[35.4436, 139.6218], [35.2828, 139.6706], [35.2873, 139.6654], [35.2951, 139.6936], [35.2835, 139.6706], [35.2828, 139.6706], [35.4436, 139.6218]],
-                {"bubblingMouseEvents": true, "color": "DarkGray", "dashArray": "8, 4", "dashOffset": null, "fill": false, "fillColor": "DarkGray", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.7, "smoothFactor": 1.0, "stroke": true, "weight": 3}
-            ).addTo(map_66daacc536417c857f4e031865c3ce59);
-        
-    
-            poly_line_8252da080f262af30b4d37adf57a707b.bindTooltip(
-                `<div>
-                     移動経路（全体）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-            var marker_ebf19c95a1c479d128689fe979a6be8c = L.marker(
-                [35.4436, 139.6218],
-                {
-}
-            ).addTo(map_66daacc536417c857f4e031865c3ce59);
-        
-    
-            var div_icon_9930ede322438f70e9378068cbc4f8d1 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Green;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e1\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_0341908de88afa6dca32404f9edf60ca = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_5e46f79501d524e9801b4d164f545ad7 = $(`<div id="html_5e46f79501d524e9801b4d164f545ad7" style="width: 100.0%; height: 100.0%;"><b>🚃 横浜駅（出発）</b><br><span style='color:#666;font-size:11px'>移動</span><br>🕐 9:00<br><hr style='margin:4px 0'>京急本線（快特）で横須賀中央駅へ。約28分・403円/人（IC）<br><a href="https://www.google.com/maps/search/%E6%A8%AA%E6%B5%9C%E9%A7%85%EF%BC%88%E5%87%BA%E7%99%BA%EF%BC%89/@35.4436,139.6218,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_0341908de88afa6dca32404f9edf60ca.setContent(html_5e46f79501d524e9801b4d164f545ad7);
-            
-        
-
-        marker_ebf19c95a1c479d128689fe979a6be8c.bindPopup(popup_0341908de88afa6dca32404f9edf60ca)
-        ;
-
-        
-    
-    
-            marker_ebf19c95a1c479d128689fe979a6be8c.bindTooltip(
-                `<div>
-                     1. 横浜駅（出発）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_ebf19c95a1c479d128689fe979a6be8c.setIcon(div_icon_9930ede322438f70e9378068cbc4f8d1);
-            
-    
-            var marker_0ad2acc5c2d2620d8273fa5d15ac601f = L.marker(
-                [35.2828, 139.6706],
-                {
-}
-            ).addTo(map_66daacc536417c857f4e031865c3ce59);
-        
-    
-            var div_icon_34068b673a71c40c45877e11b6c49c52 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Green;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e2\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_acd39c11d89fb5fc516f1fbdaecf6761 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_184a73d37ea85942f4492787c2cd3c09 = $(`<div id="html_184a73d37ea85942f4492787c2cd3c09" style="width: 100.0%; height: 100.0%;"><b>🚃 横須賀中央駅</b><br><span style='color:#666;font-size:11px'>移動</span><br>🕐 9:28<br><hr style='margin:4px 0'>京急本線で到着。ここから三笠公園まで徒歩約15分。<br><a href="https://www.google.com/maps/search/%E6%A8%AA%E9%A0%88%E8%B3%80%E4%B8%AD%E5%A4%AE%E9%A7%85/@35.2828,139.6706,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_acd39c11d89fb5fc516f1fbdaecf6761.setContent(html_184a73d37ea85942f4492787c2cd3c09);
-            
-        
-
-        marker_0ad2acc5c2d2620d8273fa5d15ac601f.bindPopup(popup_acd39c11d89fb5fc516f1fbdaecf6761)
-        ;
-
-        
-    
-    
-            marker_0ad2acc5c2d2620d8273fa5d15ac601f.bindTooltip(
-                `<div>
-                     2. 横須賀中央駅
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_0ad2acc5c2d2620d8273fa5d15ac601f.setIcon(div_icon_34068b673a71c40c45877e11b6c49c52);
-            
-    
-            var marker_80d095569baddbfcf28bdeb4f3147828 = L.marker(
-                [35.2873, 139.6654],
-                {
-}
-            ).addTo(map_66daacc536417c857f4e031865c3ce59);
-        
-    
-            var div_icon_5dd2ad1031fbcd0989e6881968148377 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: SkyBlue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e3\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_53c2d9b999d99c39dda7fe69e2a14671 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_5a7ff568521574986bc2cf07a59e3110 = $(`<div id="html_5a7ff568521574986bc2cf07a59e3110" style="width: 100.0%; height: 100.0%;"><b>🚃 三笠公園（三笠桟橋）</b><br><span style='color:#666;font-size:11px'>移動</span><br>🕐 9:43<br><hr style='margin:4px 0'>フェリー乗り場。猿島行きフェリーは毎時30分発（先着順）。チケットをここで購入。 乗船料（往復）：1,500円/人 ＋ 入島料：500円/人<br><a href="https://www.google.com/maps/search/%E4%B8%89%E7%AC%A0%E5%85%AC%E5%9C%92%EF%BC%88%E4%B8%89%E7%AC%A0%E6%A1%9F%E6%A9%8B%EF%BC%89/@35.2873,139.6654,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_53c2d9b999d99c39dda7fe69e2a14671.setContent(html_5a7ff568521574986bc2cf07a59e3110);
-            
-        
-
-        marker_80d095569baddbfcf28bdeb4f3147828.bindPopup(popup_53c2d9b999d99c39dda7fe69e2a14671)
-        ;
-
-        
-    
-    
-            marker_80d095569baddbfcf28bdeb4f3147828.bindTooltip(
-                `<div>
-                     3. 三笠公園（三笠桟橋）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_80d095569baddbfcf28bdeb4f3147828.setIcon(div_icon_5dd2ad1031fbcd0989e6881968148377);
-            
-    
-            var marker_88c84b99f1da4227a21e0e1bd3cb8581 = L.marker(
-                [35.2951, 139.6936],
-                {
-}
-            ).addTo(map_66daacc536417c857f4e031865c3ce59);
-        
-    
-            var div_icon_7502bea19fbf25aeca1c107790a7137e = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e4\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_a29e5f9b65ccea895e8082f2ee46d4ec = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_39b0fcd02c98b38aa4785448ad2c3e15 = $(`<div id="html_39b0fcd02c98b38aa4785448ad2c3e15" style="width: 100.0%; height: 100.0%;"><b>🏛 猿島（上陸）</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>🕐 10:40 ⏱ 90分<br><hr style='margin:4px 0'>東京湾唯一の無人島。周囲約1.6km。自然と史跡が共存する横須賀市指定史跡。 施設：トイレ・売店（Oceans Kitchen）あり。ゴミは持ち帰り必須。<br><a href="https://www.google.com/maps/search/%E7%8C%BF%E5%B3%B6%EF%BC%88%E4%B8%8A%E9%99%B8%EF%BC%89/@35.2951,139.6936,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_a29e5f9b65ccea895e8082f2ee46d4ec.setContent(html_39b0fcd02c98b38aa4785448ad2c3e15);
-            
-        
-
-        marker_88c84b99f1da4227a21e0e1bd3cb8581.bindPopup(popup_a29e5f9b65ccea895e8082f2ee46d4ec)
-        ;
-
-        
-    
-    
-            marker_88c84b99f1da4227a21e0e1bd3cb8581.bindTooltip(
-                `<div>
-                     4. 猿島（上陸）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_88c84b99f1da4227a21e0e1bd3cb8581.setIcon(div_icon_7502bea19fbf25aeca1c107790a7137e);
-            
-    
-            var marker_879bdae821d203faa7ab975c68bba02b = L.marker(
-                [35.2948, 139.6928],
-                {
-}
-            ).addTo(map_66daacc536417c857f4e031865c3ce59);
-        
-    
-            var div_icon_ef6ae0ee8975a85dc044f0234775f99e = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: SaddleBrown;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e5\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_c022d640845a82b6961ef2a976db4846 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_d3f22dd2fefb3b804d478bbf458a96d1 = $(`<div id="html_d3f22dd2fefb3b804d478bbf458a96d1" style="width: 100.0%; height: 100.0%;"><b>🏛 レンガトンネル（ラピュタの道）⭐</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br><hr style='margin:4px 0'>明治時代建設の石積み・レンガ造りトンネル群。苔と木の根が絡まる光景は「天空の城ラピュタ」そっくりと話題。上陸後すぐに現れる切通しのレンガ壁も圧巻。<br><a href="https://www.google.com/maps/search/%E3%83%AC%E3%83%B3%E3%82%AC%E3%83%88%E3%83%B3%E3%83%8D%E3%83%AB%EF%BC%88%E3%83%A9%E3%83%94%E3%83%A5%E3%82%BF%E3%81%AE%E9%81%93%EF%BC%89%E2%AD%90/@35.2948,139.6928,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_c022d640845a82b6961ef2a976db4846.setContent(html_d3f22dd2fefb3b804d478bbf458a96d1);
-            
-        
-
-        marker_879bdae821d203faa7ab975c68bba02b.bindPopup(popup_c022d640845a82b6961ef2a976db4846)
-        ;
-
-        
-    
-    
-            marker_879bdae821d203faa7ab975c68bba02b.bindTooltip(
-                `<div>
-                     5. レンガトンネル（ラピュタの道）⭐
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_879bdae821d203faa7ab975c68bba02b.setIcon(div_icon_ef6ae0ee8975a85dc044f0234775f99e);
-            
-    
-            var marker_e595b7b54174951ea60b1ffe458dd19c = L.marker(
-                [35.2955, 139.6932],
-                {
-}
-            ).addTo(map_66daacc536417c857f4e031865c3ce59);
-        
-    
-            var div_icon_ce16017a91c3dd5e5d14c265e892144f = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: SaddleBrown;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e6\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_4947aa4e9fecb989ce2495e153e3fd38 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_bcd361b174963baf31836dced4a1a046 = $(`<div id="html_bcd361b174963baf31836dced4a1a046" style="width: 100.0%; height: 100.0%;"><b>🏛 愛のトンネル（三叉路）⭐</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br><hr style='margin:4px 0'>島内最大の撮影スポット。3方向すべてがトンネルという珍しい構造。苔と緑に包まれた幻想的な空間。午前中の柔らかい光がおすすめ。<br><a href="https://www.google.com/maps/search/%E6%84%9B%E3%81%AE%E3%83%88%E3%83%B3%E3%83%8D%E3%83%AB%EF%BC%88%E4%B8%89%E5%8F%89%E8%B7%AF%EF%BC%89%E2%AD%90/@35.2955,139.6932,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_4947aa4e9fecb989ce2495e153e3fd38.setContent(html_bcd361b174963baf31836dced4a1a046);
-            
-        
-
-        marker_e595b7b54174951ea60b1ffe458dd19c.bindPopup(popup_4947aa4e9fecb989ce2495e153e3fd38)
-        ;
-
-        
-    
-    
-            marker_e595b7b54174951ea60b1ffe458dd19c.bindTooltip(
-                `<div>
-                     6. 愛のトンネル（三叉路）⭐
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_e595b7b54174951ea60b1ffe458dd19c.setIcon(div_icon_ce16017a91c3dd5e5d14c265e892144f);
-            
-    
-            var marker_4dbcded22b11a4292d71b33d827bef19 = L.marker(
-                [35.2958, 139.694],
-                {
-}
-            ).addTo(map_66daacc536417c857f4e031865c3ce59);
-        
-    
-            var div_icon_812a6251c4e2146fe0dfe5da2bc064bd = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e7\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_808d1399ef5c06ae5f88f7e6bcce869f = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_a55b70ff553fb37853e2e341ad0f72d0 = $(`<div id="html_a55b70ff553fb37853e2e341ad0f72d0" style="width: 100.0%; height: 100.0%;"><b>🏛 日蓮洞窟・展望台</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br><hr style='margin:4px 0'>日蓮が嵐を避けたとされる洞窟。島の最高地点から東京湾を一望できる展望台も近くにある。<br><a href="https://www.google.com/maps/search/%E6%97%A5%E8%93%AE%E6%B4%9E%E7%AA%9F%E3%83%BB%E5%B1%95%E6%9C%9B%E5%8F%B0/@35.2958,139.694,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_808d1399ef5c06ae5f88f7e6bcce869f.setContent(html_a55b70ff553fb37853e2e341ad0f72d0);
-            
-        
-
-        marker_4dbcded22b11a4292d71b33d827bef19.bindPopup(popup_808d1399ef5c06ae5f88f7e6bcce869f)
-        ;
-
-        
-    
-    
-            marker_4dbcded22b11a4292d71b33d827bef19.bindTooltip(
-                `<div>
-                     7. 日蓮洞窟・展望台
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_4dbcded22b11a4292d71b33d827bef19.setIcon(div_icon_812a6251c4e2146fe0dfe5da2bc064bd);
-            
-    
-            var marker_56b47015c5ed35c3a69904dc275c29bf = L.marker(
-                [35.2942, 139.6935],
-                {
-}
-            ).addTo(map_66daacc536417c857f4e031865c3ce59);
-        
-    
-            var div_icon_1752bdb806c6720e2451323e9748178d = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Orange;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e8\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_a068c23865bacbcf9a045ab854f099e1 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_6adb061bf91408a3bf7d45f7f5c8c6b8 = $(`<div id="html_6adb061bf91408a3bf7d45f7f5c8c6b8" style="width: 100.0%; height: 100.0%;"><b>🍽 Oceans Kitchen（売店・BBQ）</b><br><span style='color:#666;font-size:11px'>食事</span><br><hr style='margin:4px 0'>島内唯一の売店。BBQセット・軽食・飲み物を販売。事前予約でBBQも可能。<br><a href="https://www.google.com/maps/search/Oceans+Kitchen%EF%BC%88%E5%A3%B2%E5%BA%97%E3%83%BBBBQ%EF%BC%89/@35.2942,139.6935,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_a068c23865bacbcf9a045ab854f099e1.setContent(html_6adb061bf91408a3bf7d45f7f5c8c6b8);
-            
-        
-
-        marker_56b47015c5ed35c3a69904dc275c29bf.bindPopup(popup_a068c23865bacbcf9a045ab854f099e1)
-        ;
-
-        
-    
-    
-            marker_56b47015c5ed35c3a69904dc275c29bf.bindTooltip(
-                `<div>
-                     8. Oceans Kitchen（売店・BBQ）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_56b47015c5ed35c3a69904dc275c29bf.setIcon(div_icon_1752bdb806c6720e2451323e9748178d);
-            
-    
-            var marker_babb7eeb0a156f40904c14522db110d1 = L.marker(
-                [35.2835, 139.6706],
-                {
-}
-            ).addTo(map_66daacc536417c857f4e031865c3ce59);
-        
-    
-            var div_icon_35770d469a60cc0048a4dc83bfea27bb = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Orange;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e9\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_8f1f869322730687ccaeef907b5490e1 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_54e028f50412081d08a753597e492014 = $(`<div id="html_54e028f50412081d08a753597e492014" style="width: 100.0%; height: 100.0%;"><b>🍽 ランチ（よこすか海軍カレー）</b><br><span style='color:#666;font-size:11px'>食事</span><br>🕐 12:30 ⏱ 60分<br><hr style='margin:4px 0'>横須賀中央エリアでランチ。よこすか海軍カレーの提供店多数あり。2名で3,500〜4,000円程度。<br><a href="https://www.google.com/maps/search/%E3%83%A9%E3%83%B3%E3%83%81%EF%BC%88%E3%82%88%E3%81%93%E3%81%99%E3%81%8B%E6%B5%B7%E8%BB%8D%E3%82%AB%E3%83%AC%E3%83%BC%EF%BC%89/@35.2835,139.6706,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_8f1f869322730687ccaeef907b5490e1.setContent(html_54e028f50412081d08a753597e492014);
-            
-        
-
-        marker_babb7eeb0a156f40904c14522db110d1.bindPopup(popup_8f1f869322730687ccaeef907b5490e1)
-        ;
-
-        
-    
-    
-            marker_babb7eeb0a156f40904c14522db110d1.bindTooltip(
-                `<div>
-                     9. ランチ（よこすか海軍カレー）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_babb7eeb0a156f40904c14522db110d1.setIcon(div_icon_35770d469a60cc0048a4dc83bfea27bb);
-            
-    
-            var marker_f8144876378837e8f7d2d4b12aee2142 = L.marker(
-                [35.2876, 139.6655],
-                {
-}
-            ).addTo(map_66daacc536417c857f4e031865c3ce59);
-        
-    
-            var div_icon_d310c658ed96b09e89dbcd0e4341e53b = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e10\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_8032e017a56db727f68c7ad3e282045a = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_2f98a629a7ad6ad1e5368fb58c91d995 = $(`<div id="html_2f98a629a7ad6ad1e5368fb58c91d995" style="width: 100.0%; height: 100.0%;"><b>🏛 ヴェルニー公園</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>🕐 13:30 ⏱ 30分<br><hr style='margin:4px 0'>海自の護衛艦を間近で見られるフランス式庭園。薔薇の名所でもある。三笠公園に隣接。<br><a href="https://www.google.com/maps/search/%E3%83%B4%E3%82%A7%E3%83%AB%E3%83%8B%E3%83%BC%E5%85%AC%E5%9C%92/@35.2876,139.6655,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_8032e017a56db727f68c7ad3e282045a.setContent(html_2f98a629a7ad6ad1e5368fb58c91d995);
-            
-        
-
-        marker_f8144876378837e8f7d2d4b12aee2142.bindPopup(popup_8032e017a56db727f68c7ad3e282045a)
-        ;
-
-        
-    
-    
-            marker_f8144876378837e8f7d2d4b12aee2142.bindTooltip(
-                `<div>
-                     10. ヴェルニー公園
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_f8144876378837e8f7d2d4b12aee2142.setIcon(div_icon_d310c658ed96b09e89dbcd0e4341e53b);
-            
-    
-            var marker_dbee37abafef3d71e04be270197ea207 = L.marker(
-                [35.287, 139.666],
-                {
-}
-            ).addTo(map_66daacc536417c857f4e031865c3ce59);
-        
-    
-            var div_icon_73e37cfad8017ef04ca6f033aba46ff2 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Purple;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e11\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_0ca461f6d64ccab64d5b76c47249a09d = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_3e147a209748a98cab3eb23dc8f850bb = $(`<div id="html_3e147a209748a98cab3eb23dc8f850bb" style="width: 100.0%; height: 100.0%;"><b>🏛 記念艦三笠（任意）</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>🕐 14:00 ⏱ 60分<br><hr style='margin:4px 0'>日露戦争で活躍した戦艦三笠を保存・展示。入艦料600円/人。歴史に興味があれば。<br><a href="https://www.google.com/maps/search/%E8%A8%98%E5%BF%B5%E8%89%A6%E4%B8%89%E7%AC%A0%EF%BC%88%E4%BB%BB%E6%84%8F%EF%BC%89/@35.287,139.666,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_0ca461f6d64ccab64d5b76c47249a09d.setContent(html_3e147a209748a98cab3eb23dc8f850bb);
-            
-        
-
-        marker_dbee37abafef3d71e04be270197ea207.bindPopup(popup_0ca461f6d64ccab64d5b76c47249a09d)
-        ;
-
-        
-    
-    
-            marker_dbee37abafef3d71e04be270197ea207.bindTooltip(
-                `<div>
-                     11. 記念艦三笠（任意）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_dbee37abafef3d71e04be270197ea207.setIcon(div_icon_73e37cfad8017ef04ca6f033aba46ff2);
-            
-    
-            var marker_2e64f2c47e9cf0b02c73c0bffc00d28a = L.marker(
-                [35.4436, 139.6218],
-                {
-}
-            ).addTo(map_66daacc536417c857f4e031865c3ce59);
-        
-    
-            var div_icon_d24f240a587bb28460cdcf2008acc1ce = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Green;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e12\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_d6488ad550d32947f091bb995f3e6736 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_5011abe309b6623539706353c7dccc1f = $(`<div id="html_5011abe309b6623539706353c7dccc1f" style="width: 100.0%; height: 100.0%;"><b>🚃 横浜駅（帰着）</b><br><span style='color:#666;font-size:11px'>移動</span><br>🕐 15:58<br><hr style='margin:4px 0'>横須賀中央駅15:30発→横浜駅着。帰着目標：17〜18時頃。<br><a href="https://www.google.com/maps/search/%E6%A8%AA%E6%B5%9C%E9%A7%85%EF%BC%88%E5%B8%B0%E7%9D%80%EF%BC%89/@35.4436,139.6218,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_d6488ad550d32947f091bb995f3e6736.setContent(html_5011abe309b6623539706353c7dccc1f);
-            
-        
-
-        marker_2e64f2c47e9cf0b02c73c0bffc00d28a.bindPopup(popup_d6488ad550d32947f091bb995f3e6736)
-        ;
-
-        
-    
-    
-            marker_2e64f2c47e9cf0b02c73c0bffc00d28a.bindTooltip(
-                `<div>
-                     12. 横浜駅（帰着）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_2e64f2c47e9cf0b02c73c0bffc00d28a.setIcon(div_icon_d24f240a587bb28460cdcf2008acc1ce);
-            
-    
-            map_66daacc536417c857f4e031865c3ce59.fitBounds(
-                [[35.4436, 139.6218], [35.2828, 139.6706], [35.2873, 139.6654], [35.2951, 139.6936], [35.2835, 139.6706], [35.2828, 139.6706], [35.4436, 139.6218], [35.4436, 139.6218], [35.2828, 139.6706], [35.2873, 139.6654], [35.2951, 139.6936], [35.2948, 139.6928], [35.2955, 139.6932], [35.2958, 139.694], [35.2942, 139.6935], [35.2835, 139.6706], [35.2876, 139.6655], [35.287, 139.666], [35.4436, 139.6218]],
-                {}
-            );
-        
-</script>
 </html>
