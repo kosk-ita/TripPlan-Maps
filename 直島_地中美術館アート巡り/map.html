@@ -1,1298 +1,172 @@
 <!DOCTYPE html>
 <html>
 <head>
-    
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
-    
-            <meta name="viewport" content="width=device-width,
-                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-            <style>
-                #map_a0fdce4a204557a6a80a80af7fc3c1c7 {
-                    position: relative;
-                    width: 100.0%;
-                    height: 100.0%;
-                    left: 0.0%;
-                    top: 0.0%;
-                }
-                .leaflet-container { font-size: 1rem; }
-            </style>
-
-            <style>html, body {
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-            }
-            </style>
-
-            <style>#map {
-                position:absolute;
-                top:0;
-                bottom:0;
-                right:0;
-                left:0;
-                }
-            </style>
-
-            <script>
-                L_NO_TOUCH = false;
-                L_DISABLE_3D = false;
-            </script>
-
-        
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body { margin: 0; height: 100%; font-family: sans-serif; }
+    #map { height: 100%; }
+    #title {
+      position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+      z-index: 1000; background: white; padding: 6px 16px;
+      border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      font-size: 14px; font-weight: bold; white-space: nowrap;
+    }
+    #legend {
+      position: fixed; bottom: 20px; right: 10px; z-index: 1000;
+      background: white; padding: 10px 14px; border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2); font-size: 13px; max-width: 160px;
+    }
+    #legend b { display: block; margin-bottom: 6px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; margin: 3px 0; }
+    .legend-dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 1px solid white; box-shadow: 0 0 2px rgba(0,0,0,0.3); flex-shrink: 0;
+    }
+    .popup { padding: 8px 10px; max-width: 240px; font-size: 13px; line-height: 1.6; }
+    .popup hr { margin: 4px 0; border: none; border-top: 1px solid #eee; }
+    .popup a { font-size: 11px; color: #1a73e8; text-decoration: none; }
+    .popup .sub { color: #666; font-size: 11px; }
+  </style>
 </head>
 <body>
-    
-    <div style="position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:1000;background:white;padding:6px 16px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.2);font-size:14px;font-weight:bold;font-family:sans-serif;white-space:nowrap">直島 2泊3日 地中美術館アート巡り改定版</div>
-    <div style="position:fixed;bottom:20px;right:10px;z-index:1000;background:white;padding:10px 14px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.2);font-size:13px;font-family:sans-serif;max-width:160px"><b style="display:block;margin-bottom:6px">凡例</b><div style="display:flex;align-items:center;gap:6px;margin:3px 0"><div style="background:Blue;width:14px;height:14px;border-radius:50%;border:1px solid white;box-shadow:0 0 2px rgba(0,0,0,0.3);flex-shrink:0"></div><span>🏛 観光スポット</span></div><div style="display:flex;align-items:center;gap:6px;margin:3px 0"><div style="background:Orange;width:14px;height:14px;border-radius:50%;border:1px solid white;box-shadow:0 0 2px rgba(0,0,0,0.3);flex-shrink:0"></div><span>🍽 食事</span></div><div style="display:flex;align-items:center;gap:6px;margin:3px 0"><div style="background:Purple;width:14px;height:14px;border-radius:50%;border:1px solid white;box-shadow:0 0 2px rgba(0,0,0,0.3);flex-shrink:0"></div><span>🏨 宿泊</span></div><div style="display:flex;align-items:center;gap:6px;margin:3px 0"><div style="background:Green;width:14px;height:14px;border-radius:50%;border:1px solid white;box-shadow:0 0 2px rgba(0,0,0,0.3);flex-shrink:0"></div><span>🚃 移動</span></div></div>
-    
-            <div class="folium-map" id="map_a0fdce4a204557a6a80a80af7fc3c1c7" ></div>
-        
+  <div id="title">直島・豊島・犬島 2泊3日 地中美術館アート巡り改定版</div>
+  <div id="legend"><b>凡例</b><div class="legend-item"><div class="legend-dot" style="background:Blue"></div><span>🏛 観光スポット</span></div><div class="legend-item"><div class="legend-dot" style="background:Orange"></div><span>🍽 食事</span></div><div class="legend-item"><div class="legend-dot" style="background:Purple"></div><span>🏨 宿泊</span></div><div class="legend-item"><div class="legend-dot" style="background:Green"></div><span>🚃 移動</span></div></div>
+  <div id="map"></div>
+  <script>
+    const FEATURES = [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [139.730198, 35.6092112]}, "properties": {"name": "品川駅（出発）", "group": "移動", "order": 1, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "のぞみで岡山へ。品川06:40発→岡山09:46着", "visit_time": "06:40", "stay_minutes": 10}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9256375, 34.6716008]}, "properties": {"name": "岡山駅（乗り継ぎ）", "group": "移動", "order": 2, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "宇野線に乗り換え。岡山10:00台着→宇野港へ", "visit_time": "10:00", "stay_minutes": 20}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9659377, 34.5104102]}, "properties": {"name": "宇野港（1日目）", "group": "移動", "order": 3, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "四国汽船フェリーで直島（宮浦港）へ。¥370/人・所要20分", "visit_time": "10:45", "stay_minutes": 20}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9741355, 34.4563509]}, "properties": {"name": "宮浦港（1日目・直島）", "group": "移動", "order": 4, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "直島・宮浦港着。高速船（12:10発）で豊島経由→犬島へ乗り継ぎ。待機約50分・港周辺散策", "visit_time": "11:20", "stay_minutes": 50}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [134.1059426, 34.5630694]}, "properties": {"name": "犬島アートプロジェクト", "group": "観光スポット", "order": 5, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "製錬所美術館＋家プロジェクト。鑑賞パス¥4,200（2名）。13:20入館（予約確定）。所要2〜2.5時間", "visit_time": "13:20", "stay_minutes": 150}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [134.0967979, 34.5886349]}, "properties": {"name": "宝伝港", "group": "移動", "order": 6, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "あけぼの丸で犬島から宝伝港へ。¥400/人・所要10分。15:35発（美術館開館日のみ運航）", "visit_time": "15:45", "stay_minutes": 20}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9175272, 34.664035]}, "properties": {"name": "ホテルグランヴィア岡山", "group": "宿泊", "order": 7, "_umap_options": {"color": "Purple", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "岡山駅直結。予約済（RYa0mf1gvn）¥28,440（朝食付）。夜は岡山グルメ（ばら寿司・デミカツなど）", "visit_time": "17:00", "stay_minutes": 60}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9951957, 34.4602827]}, "properties": {"name": "本村ラウンジ＆アーカイブ（家プロジェクト）", "group": "観光スポット", "order": 8, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "【プランB】家プロジェクト共通チケット¥1,050/人。南寺・護王神社・角屋・はいしゃなど。月曜休館のため4/5のみ", "visit_time": "14:30", "stay_minutes": 120}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9659377, 34.5104102]}, "properties": {"name": "宇野港（2日目）", "group": "移動", "order": 9, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "岡山駅07:30〜07:50発→宇野線→宇野港08:50着。四国汽船フェリーで直島へ", "visit_time": "08:50", "stay_minutes": 15}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9741355, 34.4563509]}, "properties": {"name": "宮浦港（2日目・直島）", "group": "移動", "order": 10, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "フェリー下船後すぐ高速船（09:20発）に乗り継ぎ→豊島（家浦港）へ。乗り遅れ厳禁", "visit_time": "09:20", "stay_minutes": 5}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [134.0611907, 34.4894458]}, "properties": {"name": "家浦港（豊島）", "group": "移動", "order": 11, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "高速船で豊島・家浦港着09:42。心臓音のアーカイブ・横尾館などを散策", "visit_time": "09:42", "stay_minutes": 30}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [134.0913214, 34.4900105]}, "properties": {"name": "豊島美術館", "group": "観光スポット", "order": 12, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "13:00入館（有効12:55〜13:30・予約確定）¥1,800×2。西沢立衛設計のコンクリートシェル。所要1〜1.5時間", "visit_time": "13:00", "stay_minutes": 90}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [134.0867893, 34.4848195]}, "properties": {"name": "島キッチン（豊島）", "group": "食事", "order": 13, "_umap_options": {"color": "Orange", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "豊島の人気ランチスポット。LO14:00頃（要確認 ☎0879-68-3771）。地元食材を使った定食など", "visit_time": "12:00", "stay_minutes": 60}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9932279, 34.4466914]}, "properties": {"name": "ベネッセハウス パーク棟", "group": "宿泊", "order": 14, "_umap_options": {"color": "Purple", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "1泊2食付（夕食20:00〜・朝食ビュッフェ）¥128,644（2名・税込）。予約番号：2026030230935883", "visit_time": "17:00", "stay_minutes": 60}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9932279, 34.4466914]}, "properties": {"name": "ミュージアムレストラン一扇（渚）", "group": "食事", "order": 15, "_umap_options": {"color": "Orange", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "ベネッセハウス内の和食レストラン。夕食20:00〜22:00（予約済）。宿泊者無料のミュージアム夜間鑑賞も可", "visit_time": "20:00", "stay_minutes": 120}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9886985, 34.4490893]}, "properties": {"name": "李禹煥美術館", "group": "観光スポット", "order": 16, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "9:30〜10:30鑑賞。¥1,030/人。地中美術館から徒歩10分。予約不要。所要45分〜1時間", "visit_time": "09:30", "stay_minutes": 60}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9847608, 34.4478026]}, "properties": {"name": "地中美術館", "group": "観光スポット", "order": 17, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "11:15入館（有効11:10〜11:45・予約確定）¥2,500×2。モネの「睡蓮」・タレル・デ・マリア作品。所要1.5〜2時間", "visit_time": "11:15", "stay_minutes": 105}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9847608, 34.4478026]}, "properties": {"name": "地中カフェ", "group": "食事", "order": 18, "_umap_options": {"color": "Orange", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "地中美術館内のカフェ。モネをモチーフにしたメニュー。13:00〜13:45ランチ", "visit_time": "13:00", "stay_minutes": 45}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9987039, 34.4579266]}, "properties": {"name": "直島新美術館", "group": "観光スポット", "order": 19, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "¥1,500×2（オンライン）。安藤忠雄設計。4/7有効（時間自由・10:00〜16:30）。14:00〜16:00鑑賞", "visit_time": "14:00", "stay_minutes": 120}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9741355, 34.4563509]}, "properties": {"name": "宮浦港（帰路）", "group": "移動", "order": 20, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "17:35発フェリー→宇野港。乗り遅れ厳禁（品川22:25着のタイムリミット）", "visit_time": "17:35", "stay_minutes": 10}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9659377, 34.5104102]}, "properties": {"name": "宇野港（3日目）", "group": "移動", "order": 21, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "宇野港17:55着→宇野駅（徒歩5分）→宇野線で岡山駅へ（約40分）", "visit_time": "17:55", "stay_minutes": 10}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [133.9256375, 34.6716008]}, "properties": {"name": "岡山駅（帰路）", "group": "移動", "order": 22, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "のぞみ56号19:20発→品川22:25着。EX早特21・14号車17番D・E席（¥28,500）変更不可", "visit_time": "19:20", "stay_minutes": 10}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [139.730198, 35.6092112]}, "properties": {"name": "品川駅（帰着）", "group": "移動", "order": 23, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "22:25着。旅行終了", "visit_time": "22:25", "stay_minutes": 10}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[139.730198, 35.6092112], [133.9256375, 34.6716008], [133.9659377, 34.5104102], [133.9741355, 34.4563509], [134.1059426, 34.5630694], [134.0967979, 34.5886349], [133.9175272, 34.664035]]}, "properties": {"name": "Day 1A（犬島ルート）移動経路", "transport": "複合", "_umap_options": {"color": "Green", "weight": 4, "opacity": 0.8, "dashArray": null}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[133.9175272, 34.664035], [133.9659377, 34.5104102], [133.9741355, 34.4563509], [134.0611907, 34.4894458], [134.0867893, 34.4848195], [134.0913214, 34.4900105], [133.9932279, 34.4466914], [0.0, 0.0]]}, "properties": {"name": "Day 2（豊島→直島）移動経路", "transport": "複合", "_umap_options": {"color": "Green", "weight": 4, "opacity": 0.8, "dashArray": null}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[133.9886985, 34.4490893], [133.9847608, 34.4478026], [133.9847608, 34.4478026], [133.9987039, 34.4579266], [133.9741355, 34.4563509], [133.9659377, 34.5104102], [133.9256375, 34.6716008], [139.730198, 35.6092112]]}, "properties": {"name": "Day 3（直島→品川）移動経路", "transport": "複合", "_umap_options": {"color": "Green", "weight": 4, "opacity": 0.8, "dashArray": null}}}];
+
+    const GROUP_ICONS = {
+      "観光スポット": "🏛", "食事": "🍽", "宿泊": "🏨",
+      "移動": "🚃", "ショッピング": "🛍", "その他": "📍"
+    };
+
+    function makeMarkerSvg(color, label) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+        <circle cx="14" cy="14" r="13" fill="${color}" stroke="white" stroke-width="2.5"/>
+        <text x="14" y="18" text-anchor="middle" fill="white" font-size="11"
+              font-weight="bold" font-family="sans-serif">${label}</text>
+      </svg>`;
+      return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+    }
+
+    function makePopupContent(props, lat, lon) {
+      const name = props.name || "";
+      const group = props.group || "";
+      const icon = GROUP_ICONS[group] || "📍";
+      const visitTime = props.visit_time || "";
+      const stayMin = props.stay_minutes || "";
+      const desc = (props.description || "").replace(/\n/g, "<br>");
+      const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(name)}/@${lat},${lon},17z`;
+      let html = `<div class="popup"><b>${icon} ${name}</b>`;
+      if (group) html += `<br><span class="sub">${group}</span>`;
+      const times = [visitTime ? `🕐 ${visitTime}` : "", stayMin ? `⏱ ${stayMin}分` : ""].filter(Boolean);
+      if (times.length) html += `<br>${times.join(" ")}`;
+      if (desc) html += `<hr>${desc}`;
+      html += `<hr><a href="${mapsUrl}" target="_blank">📍 Google Mapsで開く →</a>`;
+      html += "</div>";
+      return html;
+    }
+
+    function getDirectionsMode(transport) {
+      if (!transport) return null;
+      if (/電車|鉄道|列車|新幹線/.test(transport) && !/船|フェリー/.test(transport)) return "TRANSIT";
+      if (/^(自動車|車|ドライブ)$/.test(transport)) return "DRIVING";
+      if (/^徒歩$/.test(transport)) return "WALKING";
+      return null;
+    }
+
+    function addPolyline(map, coords, umap) {
+      const path = coords.map(([lon, lat]) => ({ lat, lng: lon }));
+      const dashSymbol = umap.dashArray
+        ? [{ icon: { path: "M 0,-1 0,1", strokeOpacity: 1, scale: 3 }, offset: "0", repeat: "12px" }]
+        : undefined;
+      new google.maps.Polyline({
+        path, map,
+        strokeColor: umap.color || "Gray",
+        strokeWeight: umap.weight || 3,
+        strokeOpacity: dashSymbol ? 0 : (umap.opacity || 0.7),
+        icons: dashSymbol,
+      });
+    }
+
+    function addRoute(map, coords, props) {
+      const umap = props._umap_options || {};
+      const mode = getDirectionsMode(props.transport);
+      if (!mode) { addPolyline(map, coords, umap); return; }
+
+      const origin = { lat: coords[0][1], lng: coords[0][0] };
+      const dest = { lat: coords[coords.length - 1][1], lng: coords[coords.length - 1][0] };
+      const waypoints = coords.slice(1, -1).map(([lon, lat]) => ({
+        location: new google.maps.LatLng(lat, lon), stopover: false,
+      }));
+
+      new google.maps.DirectionsService().route({
+        origin, destination: dest, waypoints,
+        travelMode: google.maps.TravelMode[mode],
+        optimizeWaypoints: false,
+      }, (result, status) => {
+        if (status === "OK") {
+          new google.maps.DirectionsRenderer({
+            map, directions: result, suppressMarkers: true,
+            polylineOptions: {
+              strokeColor: umap.color || "DarkGray",
+              strokeWeight: umap.weight || 3,
+              strokeOpacity: umap.opacity || 0.7,
+            },
+          });
+        } else {
+          addPolyline(map, coords, umap);
+        }
+      });
+    }
+
+    function initMap() {
+      const map = new google.maps.Map(document.getElementById("map"), {
+        mapTypeId: "roadmap",
+        mapTypeControl: true,
+        fullscreenControl: true,
+      });
+      const infoWindow = new google.maps.InfoWindow();
+      const bounds = new google.maps.LatLngBounds();
+
+      const points = FEATURES.filter(f => f.geometry.type === "Point");
+      const lines = FEATURES.filter(f => f.geometry.type === "LineString");
+
+      for (const f of lines) {
+        addRoute(map, f.geometry.coordinates, f.properties || {});
+        f.geometry.coordinates.forEach(([lon, lat]) => bounds.extend({ lat, lng: lon }));
+      }
+
+      const sorted = [...points].sort((a, b) =>
+        (a.properties?.order || 0) - (b.properties?.order || 0)
+      );
+      for (const f of sorted) {
+        const [lon, lat] = f.geometry.coordinates;
+        bounds.extend({ lat, lng: lon });
+        const props = f.properties || {};
+        const color = (props._umap_options || {}).color || "Blue";
+        const order = props.order || "";
+        const marker = new google.maps.Marker({
+          position: { lat, lng: lon }, map,
+          title: props.name || "",
+          icon: {
+            url: makeMarkerSvg(color, order),
+            scaledSize: new google.maps.Size(28, 28),
+            anchor: new google.maps.Point(14, 14),
+          },
+        });
+        marker.addListener("click", () => {
+          infoWindow.setContent(makePopupContent(props, lat, lon));
+          infoWindow.open(map, marker);
+        });
+      }
+
+      if (!bounds.isEmpty()) map.fitBounds(bounds);
+    }
+  </script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPRJUGIu40HZyc1Sr_IY3Gg2JKXwaxXnk&callback=initMap&language=ja&region=JP"
+    async defer></script>
 </body>
-<script>
-    
-    
-            var map_a0fdce4a204557a6a80a80af7fc3c1c7 = L.map(
-                "map_a0fdce4a204557a6a80a80af7fc3c1c7",
-                {
-                    center: [0.0, 0.0],
-                    crs: L.CRS.EPSG3857,
-                    ...{
-  "zoom": 1,
-  "zoomControl": true,
-  "preferCanvas": false,
-}
-
-                }
-            );
-
-            
-
-        
-    
-            var tile_layer_23db4fc0ab22b0ac42156e6f28c6d82f = L.tileLayer(
-                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                {
-  "minZoom": 0,
-  "maxZoom": 18,
-  "maxNativeZoom": 18,
-  "noWrap": false,
-  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
-  "subdomains": "abc",
-  "detectRetina": false,
-  "tms": false,
-  "opacity": 1,
-}
-
-            );
-        
-    
-            tile_layer_23db4fc0ab22b0ac42156e6f28c6d82f.addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var poly_line_3420515434a6e9150b586a631f4b4e71 = L.polyline(
-                [[35.628471, 139.73876], [34.666121, 133.917734], [34.475042, 133.962901], [34.459256, 133.985889]],
-                {"bubblingMouseEvents": true, "color": "DarkGray", "dashArray": "8, 4", "dashOffset": null, "fill": false, "fillColor": "DarkGray", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 3}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            poly_line_3420515434a6e9150b586a631f4b4e71.bindTooltip(
-                `<div>
-                     1日目（プランA）：品川→岡山→宇野→宮浦
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-            var poly_line_033a5bd7eb95adaaeee4b6c002997060 = L.polyline(
-                [[34.459256, 133.985889], [34.538241, 134.090676], [34.588013, 134.099981], [34.666121, 133.917734]],
-                {"bubblingMouseEvents": true, "color": "RoyalBlue", "dashArray": "8, 4", "dashOffset": null, "fill": false, "fillColor": "RoyalBlue", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 3}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            poly_line_033a5bd7eb95adaaeee4b6c002997060.bindTooltip(
-                `<div>
-                     1日目（プランA）：宮浦→犬島→宝伝→岡山
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-            var poly_line_06c1b8c6a1d276cfb1ceff45a815dca2 = L.polyline(
-                [[34.666121, 133.917734], [34.475042, 133.962901], [34.459256, 133.985889], [34.489283, 134.061065], [34.44842, 133.993927]],
-                {"bubblingMouseEvents": true, "color": "DarkOrange", "dashArray": "8, 4", "dashOffset": null, "fill": false, "fillColor": "DarkOrange", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 3}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            poly_line_06c1b8c6a1d276cfb1ceff45a815dca2.bindTooltip(
-                `<div>
-                     2日目：岡山→宇野→直島→豊島→ベネッセ
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-            var poly_line_9807d64f10d58b9907b1be14fe09d332 = L.polyline(
-                [[34.44842, 133.993927], [34.447748, 133.984718], [34.457996, 133.99872], [34.459256, 133.985889], [34.475042, 133.962901], [34.666121, 133.917734], [35.628471, 139.73876]],
-                {"bubblingMouseEvents": true, "color": "Crimson", "dashArray": "8, 4", "dashOffset": null, "fill": false, "fillColor": "Crimson", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.6, "smoothFactor": 1.0, "stroke": true, "weight": 3}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            poly_line_9807d64f10d58b9907b1be14fe09d332.bindTooltip(
-                `<div>
-                     3日目：ベネッセ→地中→直島新美術館→宇野→岡山→品川
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-            var marker_1d9df76af236f13e4b295159f02335da = L.marker(
-                [35.628471, 139.73876],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_e189a3e6a7a495881d5778dfc28f9100 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Green;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e1\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_6dc61621c2219bb38360f0e0860068b0 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_fa472e7a5f2cb456337cb93ba445f308 = $(`<div id="html_fa472e7a5f2cb456337cb93ba445f308" style="width: 100.0%; height: 100.0%;"><b>🚃 品川駅（出発・帰着）</b><br><span style='color:#666;font-size:11px'>移動</span><br>🕐 07:00<br><hr style='margin:4px 0'>4/5 出発（プランA：07:00〜07:30台発のぞみ / プランB：08:40〜09:00台発）。4/7 帰着（19:00台岡山発→品川22:00着）<br><a href="https://www.google.com/maps/search/%E5%93%81%E5%B7%9D%E9%A7%85%EF%BC%88%E5%87%BA%E7%99%BA%E3%83%BB%E5%B8%B0%E7%9D%80%EF%BC%89/@35.628471,139.73876,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_6dc61621c2219bb38360f0e0860068b0.setContent(html_fa472e7a5f2cb456337cb93ba445f308);
-            
-        
-
-        marker_1d9df76af236f13e4b295159f02335da.bindPopup(popup_6dc61621c2219bb38360f0e0860068b0)
-        ;
-
-        
-    
-    
-            marker_1d9df76af236f13e4b295159f02335da.bindTooltip(
-                `<div>
-                     1. 品川駅（出発・帰着）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_1d9df76af236f13e4b295159f02335da.setIcon(div_icon_e189a3e6a7a495881d5778dfc28f9100);
-            
-    
-            var marker_6ffdff41d05a6c28a57356d2a6b9f11d = L.marker(
-                [34.666121, 133.917734],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_8ad50d0b86861ae8a40a71d70e994ccc = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Green;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e2\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_b95f73b4bd1ded7ef8c0653d9756add9 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_575ef03c53f194b9c5515447676a1018 = $(`<div id="html_575ef03c53f194b9c5515447676a1018" style="width: 100.0%; height: 100.0%;"><b>🚃 岡山駅</b><br><span style='color:#666;font-size:11px'>移動</span><br><hr style='margin:4px 0'>4/5：品川から新幹線で約3時間20分（¥17,770/人）。4/5夜はホテルグランヴィア岡山（駅直結）泊。4/6朝：宇野線で宇野港へ<br><a href="https://www.google.com/maps/search/%E5%B2%A1%E5%B1%B1%E9%A7%85/@34.666121,133.917734,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_b95f73b4bd1ded7ef8c0653d9756add9.setContent(html_575ef03c53f194b9c5515447676a1018);
-            
-        
-
-        marker_6ffdff41d05a6c28a57356d2a6b9f11d.bindPopup(popup_b95f73b4bd1ded7ef8c0653d9756add9)
-        ;
-
-        
-    
-    
-            marker_6ffdff41d05a6c28a57356d2a6b9f11d.bindTooltip(
-                `<div>
-                     2. 岡山駅
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_6ffdff41d05a6c28a57356d2a6b9f11d.setIcon(div_icon_8ad50d0b86861ae8a40a71d70e994ccc);
-            
-    
-            var marker_a226fbbff30ba26816e0f9e59c35d94f = L.marker(
-                [34.663909, 133.917368],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_eb154b7181eeb193f8c84d1eadc228d5 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Purple;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e3\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_467002c64e340a30f60956f810a1347f = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_20312c4b6d7438fa5f8885a69e760475 = $(`<div id="html_20312c4b6d7438fa5f8885a69e760475" style="width: 100.0%; height: 100.0%;"><b>🏨 ホテルグランヴィア岡山</b><br><span style='color:#666;font-size:11px'>宿泊</span><br><hr style='margin:4px 0'>4/5泊。岡山駅直結・徒歩1分。朝食付・¥28,440（2名）。予約番号：RYa0mf1gvn。チェックイン16:00〜<br><a href="https://www.google.com/maps/search/%E3%83%9B%E3%83%86%E3%83%AB%E3%82%B0%E3%83%A9%E3%83%B3%E3%83%B4%E3%82%A3%E3%82%A2%E5%B2%A1%E5%B1%B1/@34.663909,133.917368,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_467002c64e340a30f60956f810a1347f.setContent(html_20312c4b6d7438fa5f8885a69e760475);
-            
-        
-
-        marker_a226fbbff30ba26816e0f9e59c35d94f.bindPopup(popup_467002c64e340a30f60956f810a1347f)
-        ;
-
-        
-    
-    
-            marker_a226fbbff30ba26816e0f9e59c35d94f.bindTooltip(
-                `<div>
-                     3. ホテルグランヴィア岡山
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_a226fbbff30ba26816e0f9e59c35d94f.setIcon(div_icon_eb154b7181eeb193f8c84d1eadc228d5);
-            
-    
-            var marker_e0092b5dbf939e479131f4e2fa4231c5 = L.marker(
-                [34.475042, 133.962901],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_3c52c101ab9e4c09e90f09f2c3b3b190 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: SkyBlue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e4\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_2d347d3c55f2d8d972db420d275b03ab = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_cf55572aee0ac37afd03d86e579cc50f = $(`<div id="html_cf55572aee0ac37afd03d86e579cc50f" style="width: 100.0%; height: 100.0%;"><b>🚃 宇野港（四国汽船フェリー乗り場）</b><br><span style='color:#666;font-size:11px'>移動</span><br><hr style='margin:4px 0'>岡山駅→宇野駅（宇野線・約60分・¥510）→徒歩5分。宇野港→宮浦港フェリー（約20分・¥370/人）。4/6は07:30〜07:50台岡山発が必須<br><a href="https://www.google.com/maps/search/%E5%AE%87%E9%87%8E%E6%B8%AF%EF%BC%88%E5%9B%9B%E5%9B%BD%E6%B1%BD%E8%88%B9%E3%83%95%E3%82%A7%E3%83%AA%E3%83%BC%E4%B9%97%E3%82%8A%E5%A0%B4%EF%BC%89/@34.475042,133.962901,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_2d347d3c55f2d8d972db420d275b03ab.setContent(html_cf55572aee0ac37afd03d86e579cc50f);
-            
-        
-
-        marker_e0092b5dbf939e479131f4e2fa4231c5.bindPopup(popup_2d347d3c55f2d8d972db420d275b03ab)
-        ;
-
-        
-    
-    
-            marker_e0092b5dbf939e479131f4e2fa4231c5.bindTooltip(
-                `<div>
-                     4. 宇野港（四国汽船フェリー乗り場）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_e0092b5dbf939e479131f4e2fa4231c5.setIcon(div_icon_3c52c101ab9e4c09e90f09f2c3b3b190);
-            
-    
-            var marker_2ca2ca34fdb11cc3205b723982da86e4 = L.marker(
-                [34.459256, 133.985889],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_eab0baf1bdace92ee2847ddfd7090068 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: SkyBlue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e5\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_7b6eeb874bf51923a388863045535296 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_b6c4f9bbd5422450c4a8ebe4e0ac3b3b = $(`<div id="html_b6c4f9bbd5422450c4a8ebe4e0ac3b3b" style="width: 100.0%; height: 100.0%;"><b>🚃 宮浦港（直島）</b><br><span style='color:#666;font-size:11px'>移動</span><br><hr style='margin:4px 0'>直島の玄関口。宇野港からフェリー約20分。高速船乗り場（豊島・犬島行き）はすぐ近く。コインロッカーあり（要確認）。TVC直島レンタル（自転車）も港徒歩1分<br><a href="https://www.google.com/maps/search/%E5%AE%AE%E6%B5%A6%E6%B8%AF%EF%BC%88%E7%9B%B4%E5%B3%B6%EF%BC%89/@34.459256,133.985889,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_7b6eeb874bf51923a388863045535296.setContent(html_b6c4f9bbd5422450c4a8ebe4e0ac3b3b);
-            
-        
-
-        marker_2ca2ca34fdb11cc3205b723982da86e4.bindPopup(popup_7b6eeb874bf51923a388863045535296)
-        ;
-
-        
-    
-    
-            marker_2ca2ca34fdb11cc3205b723982da86e4.bindTooltip(
-                `<div>
-                     5. 宮浦港（直島）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_2ca2ca34fdb11cc3205b723982da86e4.setIcon(div_icon_eab0baf1bdace92ee2847ddfd7090068);
-            
-    
-            var marker_48e4f62aa8e433889c96f7d7d788e7c6 = L.marker(
-                [34.538241, 134.090676],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_7d1eb7d8f03f94eed756722e4a9aa9fe = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: SkyBlue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e6\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_bc3ea6b0de1faa843f292d806eae77b9 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_5b4db034ca1ad2852e30a5716f63b5db = $(`<div id="html_5b4db034ca1ad2852e30a5716f63b5db" style="width: 100.0%; height: 100.0%;"><b>🚃 犬島港</b><br><span style='color:#666;font-size:11px'>移動</span><br><hr style='margin:4px 0'>【プランA・4/5】宮浦港12:10発高速船（豊島経由）→犬島13:05着（¥1,880/人）。港から犬島アートプロジェクト（製錬所美術館）まで徒歩数分<br><a href="https://www.google.com/maps/search/%E7%8A%AC%E5%B3%B6%E6%B8%AF/@34.538241,134.090676,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_bc3ea6b0de1faa843f292d806eae77b9.setContent(html_5b4db034ca1ad2852e30a5716f63b5db);
-            
-        
-
-        marker_48e4f62aa8e433889c96f7d7d788e7c6.bindPopup(popup_bc3ea6b0de1faa843f292d806eae77b9)
-        ;
-
-        
-    
-    
-            marker_48e4f62aa8e433889c96f7d7d788e7c6.bindTooltip(
-                `<div>
-                     6. 犬島港
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_48e4f62aa8e433889c96f7d7d788e7c6.setIcon(div_icon_7d1eb7d8f03f94eed756722e4a9aa9fe);
-            
-    
-            var marker_35e4b72e4225d49e18f49597ae558ded = L.marker(
-                [34.563862, 134.106267],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_068b0cb73e2359a68b0b7efba1ce63be = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e7\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_8d6b9dc9e9d5a7c7e6e9d812bc7eec15 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_649a2069a0372f272530519b634c015a = $(`<div id="html_649a2069a0372f272530519b634c015a" style="width: 100.0%; height: 100.0%;"><b>🏛 犬島アートプロジェクト（製錬所美術館）⭐</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>🕐 13:20 ⏱ 90分<br><hr style='margin:4px 0'>【プランA・4/5】✅ 13:20入館確定（予約No.5872146）。鑑賞パス¥2,100/人（製錬所美術館＋家プロジェクト含む）。閉館16:30・最終入館16:00。所要2〜2.5時間<br><a href="https://www.google.com/maps/search/%E7%8A%AC%E5%B3%B6%E3%82%A2%E3%83%BC%E3%83%88%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%EF%BC%88%E8%A3%BD%E9%8C%AC%E6%89%80%E7%BE%8E%E8%A1%93%E9%A4%A8%EF%BC%89%E2%AD%90/@34.563862,134.106267,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_8d6b9dc9e9d5a7c7e6e9d812bc7eec15.setContent(html_649a2069a0372f272530519b634c015a);
-            
-        
-
-        marker_35e4b72e4225d49e18f49597ae558ded.bindPopup(popup_8d6b9dc9e9d5a7c7e6e9d812bc7eec15)
-        ;
-
-        
-    
-    
-            marker_35e4b72e4225d49e18f49597ae558ded.bindTooltip(
-                `<div>
-                     7. 犬島アートプロジェクト（製錬所美術館）⭐
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_35e4b72e4225d49e18f49597ae558ded.setIcon(div_icon_068b0cb73e2359a68b0b7efba1ce63be);
-            
-    
-            var marker_a2e1893eb5422e00a57eec785193e96c = L.marker(
-                [34.563, 134.105],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_b9083882f3c8bc601d84d860776e5464 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e8\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_ead2d73b86d6f778d729925e74f681c0 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_557bd2fde28c603aa373bc85aa18346a = $(`<div id="html_557bd2fde28c603aa373bc85aa18346a" style="width: 100.0%; height: 100.0%;"><b>🏛 犬島 家プロジェクト（島内散策）</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br><hr style='margin:4px 0'>【プランA・4/5】製錬所美術館と合わせて鑑賞パスでカバー。島内の集落にアートが点在。所要30〜45分<br><a href="https://www.google.com/maps/search/%E7%8A%AC%E5%B3%B6+%E5%AE%B6%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%EF%BC%88%E5%B3%B6%E5%86%85%E6%95%A3%E7%AD%96%EF%BC%89/@34.563,134.105,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_ead2d73b86d6f778d729925e74f681c0.setContent(html_557bd2fde28c603aa373bc85aa18346a);
-            
-        
-
-        marker_a2e1893eb5422e00a57eec785193e96c.bindPopup(popup_ead2d73b86d6f778d729925e74f681c0)
-        ;
-
-        
-    
-    
-            marker_a2e1893eb5422e00a57eec785193e96c.bindTooltip(
-                `<div>
-                     8. 犬島 家プロジェクト（島内散策）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_a2e1893eb5422e00a57eec785193e96c.setIcon(div_icon_b9083882f3c8bc601d84d860776e5464);
-            
-    
-            var marker_7bee955222659038c4a4151329ef400a = L.marker(
-                [34.588013, 134.099981],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_923e8e870ced71d5f194cce5068a5686 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: SkyBlue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e9\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_a9d6e5a1d927b4f7eb2856a034ee9cf1 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_e7e016677673e16c923fd201c727163b = $(`<div id="html_e7e016677673e16c923fd201c727163b" style="width: 100.0%; height: 100.0%;"><b>🚃 宝伝港（岡山県）</b><br><span style='color:#666;font-size:11px'>移動</span><br><hr style='margin:4px 0'>【プランA・4/5】犬島15:35発「あけぼの丸」（¥400/人・10分）→宝伝港15:45着。次便17:15。バス（西宝伝バス停）→岡山駅（両備バス・約50〜60分・¥880/人）。16:05便推奨<br><a href="https://www.google.com/maps/search/%E5%AE%9D%E4%BC%9D%E6%B8%AF%EF%BC%88%E5%B2%A1%E5%B1%B1%E7%9C%8C%EF%BC%89/@34.588013,134.099981,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_a9d6e5a1d927b4f7eb2856a034ee9cf1.setContent(html_e7e016677673e16c923fd201c727163b);
-            
-        
-
-        marker_7bee955222659038c4a4151329ef400a.bindPopup(popup_a9d6e5a1d927b4f7eb2856a034ee9cf1)
-        ;
-
-        
-    
-    
-            marker_7bee955222659038c4a4151329ef400a.bindTooltip(
-                `<div>
-                     9. 宝伝港（岡山県）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_7bee955222659038c4a4151329ef400a.setIcon(div_icon_923e8e870ced71d5f194cce5068a5686);
-            
-    
-            var marker_c2fdabfdf24fb017aa1dd18610a63139 = L.marker(
-                [34.46103, 133.997258],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_0e9fa933fb7a5427d50291cfc7b6fb32 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e10\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_519b497b8bed86dcbbea3399b71ec5b5 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_660d1824baeb48e6d7f275b54e1794b0 = $(`<div id="html_660d1824baeb48e6d7f275b54e1794b0" style="width: 100.0%; height: 100.0%;"><b>🏛 本村エリア（直島）</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br><hr style='margin:4px 0'>【プランB・4/5 / 4/7】家プロジェクト（共通チケット¥1,050/人・6軒）が点在。本村ラウンジ＆アーカイブでチケット購入。月曜休館のため4/5（日）必訪。南寺・きんざは要予約<br><a href="https://www.google.com/maps/search/%E6%9C%AC%E6%9D%91%E3%82%A8%E3%83%AA%E3%82%A2%EF%BC%88%E7%9B%B4%E5%B3%B6%EF%BC%89/@34.46103,133.997258,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_519b497b8bed86dcbbea3399b71ec5b5.setContent(html_660d1824baeb48e6d7f275b54e1794b0);
-            
-        
-
-        marker_c2fdabfdf24fb017aa1dd18610a63139.bindPopup(popup_519b497b8bed86dcbbea3399b71ec5b5)
-        ;
-
-        
-    
-    
-            marker_c2fdabfdf24fb017aa1dd18610a63139.bindTooltip(
-                `<div>
-                     10. 本村エリア（直島）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_c2fdabfdf24fb017aa1dd18610a63139.setIcon(div_icon_0e9fa933fb7a5427d50291cfc7b6fb32);
-            
-    
-            var marker_617fa275099d30af263ad48f920a8353 = L.marker(
-                [34.458857, 133.996982],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_354b703218b27fea71569a455d53f64c = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e11\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_db66e7aa4936a8f95f285cd35e23987c = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_e9b50ff378c5ccf9250a4c0f46e63ea9 = $(`<div id="html_e9b50ff378c5ccf9250a4c0f46e63ea9" style="width: 100.0%; height: 100.0%;"><b>🏛 南寺（ジェームズ・タレル）</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br><hr style='margin:4px 0'>家プロジェクトの目玉。完全暗闇体験。予約推奨・最大14名・15分入替制・最終受付16:05。¥520/人（共通チケット可）<br><a href="https://www.google.com/maps/search/%E5%8D%97%E5%AF%BA%EF%BC%88%E3%82%B8%E3%82%A7%E3%83%BC%E3%83%A0%E3%82%BA%E3%83%BB%E3%82%BF%E3%83%AC%E3%83%AB%EF%BC%89/@34.458857,133.996982,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_db66e7aa4936a8f95f285cd35e23987c.setContent(html_e9b50ff378c5ccf9250a4c0f46e63ea9);
-            
-        
-
-        marker_617fa275099d30af263ad48f920a8353.bindPopup(popup_db66e7aa4936a8f95f285cd35e23987c)
-        ;
-
-        
-    
-    
-            marker_617fa275099d30af263ad48f920a8353.bindTooltip(
-                `<div>
-                     11. 南寺（ジェームズ・タレル）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_617fa275099d30af263ad48f920a8353.setIcon(div_icon_354b703218b27fea71569a455d53f64c);
-            
-    
-            var marker_da6d28b4a6697852038f2c783d5c27c8 = L.marker(
-                [34.460472, 133.996624],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_ab525cbd688febcc8d9695aa02e29d85 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e12\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_b168d26d280cb96bec9e179d55f4cb50 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_7aef6ea2edcf53676b61d77cbe8d826a = $(`<div id="html_7aef6ea2edcf53676b61d77cbe8d826a" style="width: 100.0%; height: 100.0%;"><b>🏛 きんざ（内藤礼）</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br><hr style='margin:4px 0'>完全予約制・1名15分貸切。月〜水定休のため4/5（日）のみ入館可。¥520/人<br><a href="https://www.google.com/maps/search/%E3%81%8D%E3%82%93%E3%81%96%EF%BC%88%E5%86%85%E8%97%A4%E7%A4%BC%EF%BC%89/@34.460472,133.996624,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_b168d26d280cb96bec9e179d55f4cb50.setContent(html_7aef6ea2edcf53676b61d77cbe8d826a);
-            
-        
-
-        marker_da6d28b4a6697852038f2c783d5c27c8.bindPopup(popup_b168d26d280cb96bec9e179d55f4cb50)
-        ;
-
-        
-    
-    
-            marker_da6d28b4a6697852038f2c783d5c27c8.bindTooltip(
-                `<div>
-                     12. きんざ（内藤礼）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_da6d28b4a6697852038f2c783d5c27c8.setIcon(div_icon_ab525cbd688febcc8d9695aa02e29d85);
-            
-    
-            var marker_2fae392479ba84b1c093042ca3345dd7 = L.marker(
-                [34.489283, 134.061065],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_b6ad86a0a85610081640b8f58b8530b4 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: SkyBlue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e13\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_65e763a2f6750c839c621b7e7a17922e = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_769bf107402086a5bd55c43b2dbb3c34 = $(`<div id="html_769bf107402086a5bd55c43b2dbb3c34" style="width: 100.0%; height: 100.0%;"><b>🚃 家浦港（豊島）</b><br><span style='color:#666;font-size:11px'>移動</span><br><hr style='margin:4px 0'>【4/6】宮浦港09:20発高速船（¥820/人・約22分）→09:42着。16:17発最終便で宮浦港へ帰着（乗り遅れ厳禁）<br><a href="https://www.google.com/maps/search/%E5%AE%B6%E6%B5%A6%E6%B8%AF%EF%BC%88%E8%B1%8A%E5%B3%B6%EF%BC%89/@34.489283,134.061065,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_65e763a2f6750c839c621b7e7a17922e.setContent(html_769bf107402086a5bd55c43b2dbb3c34);
-            
-        
-
-        marker_2fae392479ba84b1c093042ca3345dd7.bindPopup(popup_65e763a2f6750c839c621b7e7a17922e)
-        ;
-
-        
-    
-    
-            marker_2fae392479ba84b1c093042ca3345dd7.bindTooltip(
-                `<div>
-                     13. 家浦港（豊島）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_2fae392479ba84b1c093042ca3345dd7.setIcon(div_icon_b6ad86a0a85610081640b8f58b8530b4);
-            
-    
-            var marker_8abb1529e8a7df2959414577925ccdb8 = L.marker(
-                [34.489703, 134.090334],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_981317132e19ea22291eec4a6cd00b9e = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e14\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_bf6e73460e4b4da03f4729ef0af3e76b = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_3373cfae13e99e9ceb61e8a639ea1af4 = $(`<div id="html_3373cfae13e99e9ceb61e8a639ea1af4" style="width: 100.0%; height: 100.0%;"><b>🏛 豊島美術館⭐</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>🕐 13:00 ⏱ 90分<br><hr style='margin:4px 0'>【4/6】✅ 13:00入館確定（有効12:55〜13:30）。¥1,800/人（オンライン）。西沢立衛設計のコンクリートシェル。自然光・風・水が入り込む空間体験。所要1〜1.5時間<br><a href="https://www.google.com/maps/search/%E8%B1%8A%E5%B3%B6%E7%BE%8E%E8%A1%93%E9%A4%A8%E2%AD%90/@34.489703,134.090334,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_bf6e73460e4b4da03f4729ef0af3e76b.setContent(html_3373cfae13e99e9ceb61e8a639ea1af4);
-            
-        
-
-        marker_8abb1529e8a7df2959414577925ccdb8.bindPopup(popup_bf6e73460e4b4da03f4729ef0af3e76b)
-        ;
-
-        
-    
-    
-            marker_8abb1529e8a7df2959414577925ccdb8.bindTooltip(
-                `<div>
-                     14. 豊島美術館⭐
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_8abb1529e8a7df2959414577925ccdb8.setIcon(div_icon_981317132e19ea22291eec4a6cd00b9e);
-            
-    
-            var marker_080309f4376d776bd17b7c83b72368d5 = L.marker(
-                [34.487875, 134.103112],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_1d07f5591f69484e93ed903950891826 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e15\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_e5629912a65929eff12f45261102d280 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_a9fdd3a6ee385aab35b1080fc7e91326 = $(`<div id="html_a9fdd3a6ee385aab35b1080fc7e91326" style="width: 100.0%; height: 100.0%;"><b>🏛 心臓音のアーカイブ</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br><hr style='margin:4px 0'>【4/6】クリスチャン・ボルタンスキーの作品。家浦港から徒歩圏内。自分の心臓音を登録することも可能<br><a href="https://www.google.com/maps/search/%E5%BF%83%E8%87%93%E9%9F%B3%E3%81%AE%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96/@34.487875,134.103112,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_e5629912a65929eff12f45261102d280.setContent(html_a9fdd3a6ee385aab35b1080fc7e91326);
-            
-        
-
-        marker_080309f4376d776bd17b7c83b72368d5.bindPopup(popup_e5629912a65929eff12f45261102d280)
-        ;
-
-        
-    
-    
-            marker_080309f4376d776bd17b7c83b72368d5.bindTooltip(
-                `<div>
-                     15. 心臓音のアーカイブ
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_080309f4376d776bd17b7c83b72368d5.setIcon(div_icon_1d07f5591f69484e93ed903950891826);
-            
-    
-            var marker_bb532f270970d35dc25ce36cf2aafca5 = L.marker(
-                [34.484795, 134.086803],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_7572204d8978dc9bdd79db46a9bbcfc9 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Orange;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e16\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_81fd19c28f6443fefd871f770273075e = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_2b6b0c2ea7bc2a19cfe3b0c26d9af95d = $(`<div id="html_2b6b0c2ea7bc2a19cfe3b0c26d9af95d" style="width: 100.0%; height: 100.0%;"><b>🍽 島キッチン（豊島）</b><br><span style='color:#666;font-size:11px'>食事</span><br>🕐 12:30 ⏱ 60分<br><hr style='margin:4px 0'>【4/6昼】豊島の人気カフェ・食堂。地元食材を使った定食。LO14:00頃（要確認 ☎0879-68-3771）。豊島美術館の前に利用推奨<br><a href="https://www.google.com/maps/search/%E5%B3%B6%E3%82%AD%E3%83%83%E3%83%81%E3%83%B3%EF%BC%88%E8%B1%8A%E5%B3%B6%EF%BC%89/@34.484795,134.086803,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_81fd19c28f6443fefd871f770273075e.setContent(html_2b6b0c2ea7bc2a19cfe3b0c26d9af95d);
-            
-        
-
-        marker_bb532f270970d35dc25ce36cf2aafca5.bindPopup(popup_81fd19c28f6443fefd871f770273075e)
-        ;
-
-        
-    
-    
-            marker_bb532f270970d35dc25ce36cf2aafca5.bindTooltip(
-                `<div>
-                     16. 島キッチン（豊島）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_bb532f270970d35dc25ce36cf2aafca5.setIcon(div_icon_7572204d8978dc9bdd79db46a9bbcfc9);
-            
-    
-            var marker_643640aaddf737c5f0a48f0fe640ce51 = L.marker(
-                [34.44842, 133.993927],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_4ab576aae84075b27083d1a464e4edab = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Purple;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e17\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_e78d140890826b58d43a6fc70095e31d = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_f16151dff6abed8ca4cb6579df9f7ef6 = $(`<div id="html_f16151dff6abed8ca4cb6579df9f7ef6" style="width: 100.0%; height: 100.0%;"><b>🏨 ベネッセハウス パーク棟⭐</b><br><span style='color:#666;font-size:11px'>宿泊</span><br><hr style='margin:4px 0'>【4/6〜4/7泊】✅ 予約済（¥128,644・2名・2食付）。予約番号：2026030230935883。チェックイン〜17:00。宿泊者はミュージアム無料・23時まで鑑賞可能<br><a href="https://www.google.com/maps/search/%E3%83%99%E3%83%8D%E3%83%83%E3%82%BB%E3%83%8F%E3%82%A6%E3%82%B9+%E3%83%91%E3%83%BC%E3%82%AF%E6%A3%9F%E2%AD%90/@34.44842,133.993927,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_e78d140890826b58d43a6fc70095e31d.setContent(html_f16151dff6abed8ca4cb6579df9f7ef6);
-            
-        
-
-        marker_643640aaddf737c5f0a48f0fe640ce51.bindPopup(popup_e78d140890826b58d43a6fc70095e31d)
-        ;
-
-        
-    
-    
-            marker_643640aaddf737c5f0a48f0fe640ce51.bindTooltip(
-                `<div>
-                     17. ベネッセハウス パーク棟⭐
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_643640aaddf737c5f0a48f0fe640ce51.setIcon(div_icon_4ab576aae84075b27083d1a464e4edab);
-            
-    
-            var marker_6895db7ff0ee7fb2ab4aec7792aa6506 = L.marker(
-                [34.445223, 133.990853],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_2b54b45c854577f9033c360f222545e6 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e18\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_735ba5e829cab7347b727e3cdc3a1781 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_e92756471a366b703526b426c9658429 = $(`<div id="html_e92756471a366b703526b426c9658429" style="width: 100.0%; height: 100.0%;"><b>🏛 ベネッセハウスミュージアム</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br><hr style='margin:4px 0'>【4/6夕・4/7】宿泊者無料・23:00まで鑑賞可。4/6は17:30〜の夕方鑑賞と22:00〜の夜間鑑賞。安藤忠雄設計。草間彌生・リチャード・ロングほか多数<br><a href="https://www.google.com/maps/search/%E3%83%99%E3%83%8D%E3%83%83%E3%82%BB%E3%83%8F%E3%82%A6%E3%82%B9%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%82%A2%E3%83%A0/@34.445223,133.990853,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_735ba5e829cab7347b727e3cdc3a1781.setContent(html_e92756471a366b703526b426c9658429);
-            
-        
-
-        marker_6895db7ff0ee7fb2ab4aec7792aa6506.bindPopup(popup_735ba5e829cab7347b727e3cdc3a1781)
-        ;
-
-        
-    
-    
-            marker_6895db7ff0ee7fb2ab4aec7792aa6506.bindTooltip(
-                `<div>
-                     18. ベネッセハウスミュージアム
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_6895db7ff0ee7fb2ab4aec7792aa6506.setIcon(div_icon_2b54b45c854577f9033c360f222545e6);
-            
-    
-            var marker_f230022652f8e344bf99a575359e61ab = L.marker(
-                [34.445223, 133.990853],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_be5c731d242f43b4796209ab4bc2d985 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Orange;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e19\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_0e8393ead936075f3e60248c64891ef1 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_610445fe1c4de4497502378d36714760 = $(`<div id="html_610445fe1c4de4497502378d36714760" style="width: 100.0%; height: 100.0%;"><b>🍽 ミュージアムレストラン一扇（夕食・渚）</b><br><span style='color:#666;font-size:11px'>食事</span><br>🕐 20:00 ⏱ 120分<br><hr style='margin:4px 0'>【4/6夕食】✅ 予約済（20:00〜22:00）。ベネッセハウス内の和食レストラン。瀬戸内の食材を活かした懐石料理<br><a href="https://www.google.com/maps/search/%E3%83%9F%E3%83%A5%E3%83%BC%E3%82%B8%E3%82%A2%E3%83%A0%E3%83%AC%E3%82%B9%E3%83%88%E3%83%A9%E3%83%B3%E4%B8%80%E6%89%87%EF%BC%88%E5%A4%95%E9%A3%9F%E3%83%BB%E6%B8%9A%EF%BC%89/@34.445223,133.990853,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_0e8393ead936075f3e60248c64891ef1.setContent(html_610445fe1c4de4497502378d36714760);
-            
-        
-
-        marker_f230022652f8e344bf99a575359e61ab.bindPopup(popup_0e8393ead936075f3e60248c64891ef1)
-        ;
-
-        
-    
-    
-            marker_f230022652f8e344bf99a575359e61ab.bindTooltip(
-                `<div>
-                     19. ミュージアムレストラン一扇（夕食・渚）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_f230022652f8e344bf99a575359e61ab.setIcon(div_icon_be5c731d242f43b4796209ab4bc2d985);
-            
-    
-            var marker_68774b2d655ff46b47a13b92c794e4e4 = L.marker(
-                [34.44842, 133.993927],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_bee8b169aaf251a1d32dd6c7a15f47f1 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Orange;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e20\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_cf51c063e6a9d16ebed201c6128ea340 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_8b6769924f674c4990e3ee2c8d2778d2 = $(`<div id="html_8b6769924f674c4990e3ee2c8d2778d2" style="width: 100.0%; height: 100.0%;"><b>🍽 テラスレストラン（朝食ビュッフェ）</b><br><span style='color:#666;font-size:11px'>食事</span><br>🕐 08:00 ⏱ 60分<br><hr style='margin:4px 0'>【4/7朝食】✅ 予約済（08:00〜09:00）。瀬戸内海を眺めながらのビュッフェ。2名分込み<br><a href="https://www.google.com/maps/search/%E3%83%86%E3%83%A9%E3%82%B9%E3%83%AC%E3%82%B9%E3%83%88%E3%83%A9%E3%83%B3%EF%BC%88%E6%9C%9D%E9%A3%9F%E3%83%93%E3%83%A5%E3%83%83%E3%83%95%E3%82%A7%EF%BC%89/@34.44842,133.993927,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_cf51c063e6a9d16ebed201c6128ea340.setContent(html_8b6769924f674c4990e3ee2c8d2778d2);
-            
-        
-
-        marker_68774b2d655ff46b47a13b92c794e4e4.bindPopup(popup_cf51c063e6a9d16ebed201c6128ea340)
-        ;
-
-        
-    
-    
-            marker_68774b2d655ff46b47a13b92c794e4e4.bindTooltip(
-                `<div>
-                     20. テラスレストラン（朝食ビュッフェ）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_68774b2d655ff46b47a13b92c794e4e4.setIcon(div_icon_bee8b169aaf251a1d32dd6c7a15f47f1);
-            
-    
-            var marker_18d25164baf5cddf3f3b46f012bc8677 = L.marker(
-                [34.448524, 133.989118],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_9d72d1ba5b005953b1467a7739aa33c3 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e21\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_4ca1f059a809cc683394fe3f1479730c = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_af41490883890458fa5636fa8cbcaa3e = $(`<div id="html_af41490883890458fa5636fa8cbcaa3e" style="width: 100.0%; height: 100.0%;"><b>🏛 李禹煥美術館</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>🕐 09:30 ⏱ 60分<br><hr style='margin:4px 0'>【4/7】¥1,030/人。予約不要。地中美術館から徒歩10分。安藤忠雄設計。月曜休館（4/7は火曜なので開館）。所要45分〜1時間<br><a href="https://www.google.com/maps/search/%E6%9D%8E%E7%A6%B9%E7%85%A5%E7%BE%8E%E8%A1%93%E9%A4%A8/@34.448524,133.989118,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_4ca1f059a809cc683394fe3f1479730c.setContent(html_af41490883890458fa5636fa8cbcaa3e);
-            
-        
-
-        marker_18d25164baf5cddf3f3b46f012bc8677.bindPopup(popup_4ca1f059a809cc683394fe3f1479730c)
-        ;
-
-        
-    
-    
-            marker_18d25164baf5cddf3f3b46f012bc8677.bindTooltip(
-                `<div>
-                     21. 李禹煥美術館
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_18d25164baf5cddf3f3b46f012bc8677.setIcon(div_icon_9d72d1ba5b005953b1467a7739aa33c3);
-            
-    
-            var marker_f7e0322eddbe99233e9f89befeb4eb0b = L.marker(
-                [34.447748, 133.984718],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_09cfaca24214a4f046dd7ad259b931c7 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e22\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_1fca758f2d447432667aabba6d748c28 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_e1b53120d68f0da526d63c6994312e1a = $(`<div id="html_e1b53120d68f0da526d63c6994312e1a" style="width: 100.0%; height: 100.0%;"><b>🏛 地中美術館⭐</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>🕐 11:15 ⏱ 105分<br><hr style='margin:4px 0'>【4/7】✅ 11:15入館確定（有効11:10〜11:45）。¥2,500/人（オンライン）。安藤忠雄設計・地下空間。モネ「睡蓮」・タレル・デ・マリア作品。所要1.5〜2時間<br><a href="https://www.google.com/maps/search/%E5%9C%B0%E4%B8%AD%E7%BE%8E%E8%A1%93%E9%A4%A8%E2%AD%90/@34.447748,133.984718,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_1fca758f2d447432667aabba6d748c28.setContent(html_e1b53120d68f0da526d63c6994312e1a);
-            
-        
-
-        marker_f7e0322eddbe99233e9f89befeb4eb0b.bindPopup(popup_1fca758f2d447432667aabba6d748c28)
-        ;
-
-        
-    
-    
-            marker_f7e0322eddbe99233e9f89befeb4eb0b.bindTooltip(
-                `<div>
-                     22. 地中美術館⭐
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_f7e0322eddbe99233e9f89befeb4eb0b.setIcon(div_icon_09cfaca24214a4f046dd7ad259b931c7);
-            
-    
-            var marker_7dc784777184a2527980c57cf1a62261 = L.marker(
-                [34.447748, 133.984718],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_3b72b4fa59895e436009a9ade83434c8 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Orange;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e23\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_6778f4b67ca8ce0d6bbc2070ab27f093 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_5d2b319e61baeeb36d643b1707d01d36 = $(`<div id="html_5d2b319e61baeeb36d643b1707d01d36" style="width: 100.0%; height: 100.0%;"><b>🍽 地中カフェ</b><br><span style='color:#666;font-size:11px'>食事</span><br>🕐 13:00 ⏱ 45分<br><hr style='margin:4px 0'>【4/7昼食】地中美術館内。モネをモチーフにしたメニュー。美術館鑑賞後そのまま利用可能<br><a href="https://www.google.com/maps/search/%E5%9C%B0%E4%B8%AD%E3%82%AB%E3%83%95%E3%82%A7/@34.447748,133.984718,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_6778f4b67ca8ce0d6bbc2070ab27f093.setContent(html_5d2b319e61baeeb36d643b1707d01d36);
-            
-        
-
-        marker_7dc784777184a2527980c57cf1a62261.bindPopup(popup_6778f4b67ca8ce0d6bbc2070ab27f093)
-        ;
-
-        
-    
-    
-            marker_7dc784777184a2527980c57cf1a62261.bindTooltip(
-                `<div>
-                     23. 地中カフェ
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_7dc784777184a2527980c57cf1a62261.setIcon(div_icon_3b72b4fa59895e436009a9ade83434c8);
-            
-    
-            var marker_ac9b4cfb136bb845ca5cadb03211d7e7 = L.marker(
-                [34.457996, 133.99872],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_a207f424cac1390930bf380721abdf38 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e24\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_49d6cebfa8e98b0ec07fa3796bfb3fc8 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_204a6dd82241ee8d9cfcea3b64fea210 = $(`<div id="html_204a6dd82241ee8d9cfcea3b64fea210" style="width: 100.0%; height: 100.0%;"><b>🏛 直島新美術館</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>🕐 14:00 ⏱ 120分<br><hr style='margin:4px 0'>【4/7】✅ 4/7分予約済（有効10:00〜16:30・日付指定・時間自由）。¥1,500/人（オンライン）。安藤忠雄設計。開館記念展「原点から未来へ」〜2026年5月10日。本村エリアへバス15〜20分<br><a href="https://www.google.com/maps/search/%E7%9B%B4%E5%B3%B6%E6%96%B0%E7%BE%8E%E8%A1%93%E9%A4%A8/@34.457996,133.99872,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_49d6cebfa8e98b0ec07fa3796bfb3fc8.setContent(html_204a6dd82241ee8d9cfcea3b64fea210);
-            
-        
-
-        marker_ac9b4cfb136bb845ca5cadb03211d7e7.bindPopup(popup_49d6cebfa8e98b0ec07fa3796bfb3fc8)
-        ;
-
-        
-    
-    
-            marker_ac9b4cfb136bb845ca5cadb03211d7e7.bindTooltip(
-                `<div>
-                     24. 直島新美術館
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_ac9b4cfb136bb845ca5cadb03211d7e7.setIcon(div_icon_a207f424cac1390930bf380721abdf38);
-            
-    
-            var marker_6173430680db6f11e57509bdb7881310 = L.marker(
-                [34.44842, 133.993927],
-                {
-}
-            ).addTo(map_a0fdce4a204557a6a80a80af7fc3c1c7);
-        
-    
-            var div_icon_416ae65f600b52bd0a61c38fd79fff08 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Green;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e25\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_5f98e2ab88eb3241440c8d7c635cdf2d = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_ee2d84820f67d8f9eb2f1ceec6987848 = $(`<div id="html_ee2d84820f67d8f9eb2f1ceec6987848" style="width: 100.0%; height: 100.0%;"><b>🚃 ベネッセハウス（荷物回収）</b><br><span style='color:#666;font-size:11px'>移動</span><br>🕐 16:30<br><hr style='margin:4px 0'>【4/7】チェックアウト後に荷物を預けておき、観光後に回収。17:35発フェリーのタイムリミットに注意<br><a href="https://www.google.com/maps/search/%E3%83%99%E3%83%8D%E3%83%83%E3%82%BB%E3%83%8F%E3%82%A6%E3%82%B9%EF%BC%88%E8%8D%B7%E7%89%A9%E5%9B%9E%E5%8F%8E%EF%BC%89/@34.44842,133.993927,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_5f98e2ab88eb3241440c8d7c635cdf2d.setContent(html_ee2d84820f67d8f9eb2f1ceec6987848);
-            
-        
-
-        marker_6173430680db6f11e57509bdb7881310.bindPopup(popup_5f98e2ab88eb3241440c8d7c635cdf2d)
-        ;
-
-        
-    
-    
-            marker_6173430680db6f11e57509bdb7881310.bindTooltip(
-                `<div>
-                     25. ベネッセハウス（荷物回収）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_6173430680db6f11e57509bdb7881310.setIcon(div_icon_416ae65f600b52bd0a61c38fd79fff08);
-            
-    
-            map_a0fdce4a204557a6a80a80af7fc3c1c7.fitBounds(
-                [[35.628471, 139.73876], [34.666121, 133.917734], [34.475042, 133.962901], [34.459256, 133.985889], [34.459256, 133.985889], [34.538241, 134.090676], [34.588013, 134.099981], [34.666121, 133.917734], [34.666121, 133.917734], [34.475042, 133.962901], [34.459256, 133.985889], [34.489283, 134.061065], [34.44842, 133.993927], [34.44842, 133.993927], [34.447748, 133.984718], [34.457996, 133.99872], [34.459256, 133.985889], [34.475042, 133.962901], [34.666121, 133.917734], [35.628471, 139.73876], [35.628471, 139.73876], [34.666121, 133.917734], [34.663909, 133.917368], [34.475042, 133.962901], [34.459256, 133.985889], [34.538241, 134.090676], [34.563862, 134.106267], [34.563, 134.105], [34.588013, 134.099981], [34.46103, 133.997258], [34.458857, 133.996982], [34.460472, 133.996624], [34.489283, 134.061065], [34.489703, 134.090334], [34.487875, 134.103112], [34.484795, 134.086803], [34.44842, 133.993927], [34.445223, 133.990853], [34.445223, 133.990853], [34.44842, 133.993927], [34.448524, 133.989118], [34.447748, 133.984718], [34.447748, 133.984718], [34.457996, 133.99872], [34.44842, 133.993927]],
-                {}
-            );
-        
-</script>
 </html>
