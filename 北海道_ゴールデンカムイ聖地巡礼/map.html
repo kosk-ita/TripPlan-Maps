@@ -1,456 +1,172 @@
 <!DOCTYPE html>
 <html>
 <head>
-    
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
-    
-            <meta name="viewport" content="width=device-width,
-                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-            <style>
-                #map_48f8c7fbbc78ed74262ce2fa85963e5d {
-                    position: relative;
-                    width: 100.0%;
-                    height: 100.0%;
-                    left: 0.0%;
-                    top: 0.0%;
-                }
-                .leaflet-container { font-size: 1rem; }
-            </style>
-
-            <style>html, body {
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-            }
-            </style>
-
-            <style>#map {
-                position:absolute;
-                top:0;
-                bottom:0;
-                right:0;
-                left:0;
-                }
-            </style>
-
-            <script>
-                L_NO_TOUCH = false;
-                L_DISABLE_3D = false;
-            </script>
-
-        
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body { margin: 0; height: 100%; font-family: sans-serif; }
+    #map { height: 100%; }
+    #title {
+      position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+      z-index: 1000; background: white; padding: 6px 16px;
+      border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      font-size: 14px; font-weight: bold; white-space: nowrap;
+    }
+    #legend {
+      position: fixed; bottom: 20px; right: 10px; z-index: 1000;
+      background: white; padding: 10px 14px; border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2); font-size: 13px; max-width: 160px;
+    }
+    #legend b { display: block; margin-bottom: 6px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; margin: 3px 0; }
+    .legend-dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 1px solid white; box-shadow: 0 0 2px rgba(0,0,0,0.3); flex-shrink: 0;
+    }
+    .popup { padding: 8px 10px; max-width: 240px; font-size: 13px; line-height: 1.6; }
+    .popup hr { margin: 4px 0; border: none; border-top: 1px solid #eee; }
+    .popup a { font-size: 11px; color: #1a73e8; text-decoration: none; }
+    .popup .sub { color: #666; font-size: 11px; }
+  </style>
 </head>
 <body>
-    
-    <div style="position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:1000;background:white;padding:6px 16px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.2);font-size:14px;font-weight:bold;font-family:sans-serif;white-space:nowrap">北海道 ゴールデンカムイ聖地巡礼プラン（モジュールA：札幌エリア）</div>
-    <div style="position:fixed;bottom:20px;right:10px;z-index:1000;background:white;padding:10px 14px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.2);font-size:13px;font-family:sans-serif;max-width:160px"><b style="display:block;margin-bottom:6px">凡例</b><div style="display:flex;align-items:center;gap:6px;margin:3px 0"><div style="background:Blue;width:14px;height:14px;border-radius:50%;border:1px solid white;box-shadow:0 0 2px rgba(0,0,0,0.3);flex-shrink:0"></div><span>🏛 観光スポット</span></div><div style="display:flex;align-items:center;gap:6px;margin:3px 0"><div style="background:Gray;width:14px;height:14px;border-radius:50%;border:1px solid white;box-shadow:0 0 2px rgba(0,0,0,0.3);flex-shrink:0"></div><span>📍 その他</span></div></div>
-    
-            <div class="folium-map" id="map_48f8c7fbbc78ed74262ce2fa85963e5d" ></div>
-        
+  <div id="title">北海道 5泊6日 ゴールデンカムイ聖地巡礼</div>
+  <div id="legend"><b>凡例</b><div class="legend-item"><div class="legend-dot" style="background:Blue"></div><span>🏛 観光スポット</span></div><div class="legend-item"><div class="legend-dot" style="background:Orange"></div><span>🍽 食事</span></div><div class="legend-item"><div class="legend-dot" style="background:Purple"></div><span>🏨 宿泊</span></div><div class="legend-item"><div class="legend-dot" style="background:Green"></div><span>🚃 移動</span></div></div>
+  <div id="map"></div>
+  <script>
+    const FEATURES = [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [139.7760994, 35.5456924]}, "properties": {"name": "羽田空港（出発）", "group": "移動", "order": 1, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "AIR DO 8:20発 → 新千歳へ", "visit_time": "07:25", "stay_minutes": 55}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [141.6829598, 42.786787]}, "properties": {"name": "新千歳空港", "group": "移動", "order": 2, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "9:50着 → JR快速エアポートで札幌駅へ", "visit_time": "09:50", "stay_minutes": 20}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [141.350787, 43.0686555]}, "properties": {"name": "札幌駅", "group": "移動", "order": 3, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "10:50着。ホテルに荷物を預けて観光へ", "visit_time": "10:50", "stay_minutes": 30}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [141.3536448, 43.0625537]}, "properties": {"name": "札幌市時計台", "group": "観光スポット", "order": 4, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "ゴールデンカムイ24巻〜の重要舞台。外観が忠実に描かれている", "visit_time": "13:30", "stay_minutes": 30}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [141.3480242, 43.0639656]}, "properties": {"name": "旧道庁赤レンガ庁舎", "group": "観光スポット", "order": 5, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "外観散策。JRで苗穂駅へ移動後、サッポロビール博物館へ", "visit_time": "14:30", "stay_minutes": 20}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [141.3690082, 43.0714022]}, "properties": {"name": "サッポロビール博物館", "group": "観光スポット", "order": 6, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "ゴールデンカムイのクライマックス舞台。プレミアムツアー要予約", "visit_time": "15:30", "stay_minutes": 60}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [141.3534, 43.0554]}, "properties": {"name": "ベッセルホテルカンパーナすすきの（札幌）", "group": "宿泊", "order": 7, "_umap_options": {"color": "Purple", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "2泊。予約番号 RYa0mnm0jz。朝食の海鮮ビュッフェが高評価", "visit_time": "19:00", "stay_minutes": 60}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [141.4985449, 43.0460191]}, "properties": {"name": "北海道開拓の村", "group": "観光スポット", "order": 8, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "ゴールデンカムイの舞台が多数。全52棟開放。3〜4時間かけて巡る", "visit_time": "09:30", "stay_minutes": 210}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [141.4985449, 43.0460191]}, "properties": {"name": "北海道博物館", "group": "観光スポット", "order": 9, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "アイヌ文化・近代北海道史の常設展示。開拓の村に隣接", "visit_time": "14:00", "stay_minutes": 120}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [144.161449, 43.8826589]}, "properties": {"name": "女満別空港", "group": "移動", "order": 10, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "NH4861 10:15着。トヨタレンタカー受取（予約番号 99956194700）", "visit_time": "10:15", "stay_minutes": 30}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [144.2295979, 43.9967662]}, "properties": {"name": "博物館網走監獄", "group": "観光スポット", "order": 11, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "ゴールデンカムイ最重要聖地。五翼放射状平屋舎房（重要文化財）。監獄食堂で昼食", "visit_time": "11:00", "stay_minutes": 240}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [144.2396569, 44.0006018]}, "properties": {"name": "オホーツク流氷館", "group": "観光スポット", "order": 12, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "天都山展望台。6月は流氷なし、常設展示「流氷のある暮らし」「クリオネ」", "visit_time": "15:30", "stay_minutes": 60}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [144.2187704, 43.9830387]}, "properties": {"name": "ホテル網走湖荘", "group": "宿泊", "order": 13, "_umap_options": {"color": "Purple", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "1泊。予約番号 RYa0mnhfh3。レイクビュー和洋室・露天風呂あり", "visit_time": "21:00", "stay_minutes": 60}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [144.1504122, 44.0579602]}, "properties": {"name": "能取湖・卯原内サンゴ草群生地", "group": "観光スポット", "order": 14, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "レンタカーでドライブ。6月は緑一面。能取岬まで足を延ばすことも可", "visit_time": "09:30", "stay_minutes": 120}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [140.8250168, 41.7698758]}, "properties": {"name": "函館空港", "group": "移動", "order": 15, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "NH4866 新千歳乗り継ぎ後、18:35着。バスでホテルへ", "visit_time": "18:35", "stay_minutes": 30}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [140.7190296, 41.7676443]}, "properties": {"name": "ラビスタ函館ベイ", "group": "宿泊", "order": 16, "_umap_options": {"color": "Purple", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "2泊。予約番号 RYa0mnn93z。デラックスツイン函館山側。朝食7年連続北海道1位", "visit_time": "19:15", "stay_minutes": 60}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [140.7539587, 41.7945919]}, "properties": {"name": "五稜郭タワー", "group": "観光スポット", "order": 17, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "展望台から星型を一望。土方歳三・クライマックス舞台", "visit_time": "09:30", "stay_minutes": 60}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [140.7571559, 41.7969005]}, "properties": {"name": "五稜郭公園", "group": "観光スポット", "order": 18, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "城郭内を散策。6月は桜が終わり緑が美しい", "visit_time": "10:30", "stay_minutes": 60}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [140.7563129, 41.796593]}, "properties": {"name": "函館奉行所", "group": "観光スポット", "order": 19, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "五稜郭内の復元施設。幕末の雰囲気を体感", "visit_time": "11:30", "stay_minutes": 60}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [140.7089, 41.765]}, "properties": {"name": "元町エリア（旧イギリス領事館）", "group": "観光スポット", "order": 20, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "異国情緒ある建築群散策。旧イギリス領事館・旧公会堂など", "visit_time": "14:45", "stay_minutes": 105}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [140.7095454, 41.760078]}, "properties": {"name": "函館山ロープウェイ", "group": "観光スポット", "order": 21, "_umap_options": {"color": "Blue", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "往復1,800円。6月の日没は19:30〜20:00ごろ。夜景ベストシーズン", "visit_time": "20:00", "stay_minutes": 90}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [140.724817, 41.7722393]}, "properties": {"name": "函館朝市", "group": "食事", "order": 22, "_umap_options": {"color": "Orange", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "朝食：いか刺し・海鮮丼・朝ラーメン。火曜は平日のため比較的空いている", "visit_time": "06:00", "stay_minutes": 90}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [140.8250168, 41.7698758]}, "properties": {"name": "函館空港（出発）", "group": "移動", "order": 23, "_umap_options": {"color": "Green", "iconClass": "Circle", "showLabel": true, "labelDirection": "bottom"}, "description": "JAL 19:30発 → 羽田へ", "visit_time": "19:00", "stay_minutes": 30}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[139.7760994, 35.5456924], [141.6829598, 42.786787], [141.350787, 43.0686555], [141.3536448, 43.0625537], [141.3480242, 43.0639656], [141.3690082, 43.0714022], [141.3534, 43.0554]]}, "properties": {"name": "Day 1 移動経路（東京→札幌）", "transport": "複合", "_umap_options": {"color": "Green", "weight": 4, "opacity": 0.8, "dashArray": null}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[141.4985449, 43.0460191], [141.4985449, 43.0460191]]}, "properties": {"name": "Day 2 移動経路（札幌観光）", "transport": "複合", "_umap_options": {"color": "Green", "weight": 4, "opacity": 0.8, "dashArray": null}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[144.161449, 43.8826589], [144.2295979, 43.9967662], [144.2396569, 44.0006018], [144.2187704, 43.9830387]]}, "properties": {"name": "Day 3 移動経路（札幌→網走）", "transport": "複合", "_umap_options": {"color": "Green", "weight": 4, "opacity": 0.8, "dashArray": null}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[144.1504122, 44.0579602], [144.161449, 43.8826589], [140.8250168, 41.7698758], [140.7190296, 41.7676443]]}, "properties": {"name": "Day 4 移動経路（網走→函館）", "transport": "複合", "_umap_options": {"color": "Green", "weight": 4, "opacity": 0.8, "dashArray": null}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[140.7539587, 41.7945919], [140.7571559, 41.7969005], [140.7563129, 41.796593], [140.7089, 41.765], [140.7095454, 41.760078]]}, "properties": {"name": "Day 5 移動経路（函館観光）", "transport": "複合", "_umap_options": {"color": "Green", "weight": 4, "opacity": 0.8, "dashArray": null}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[140.724817, 41.7722393], [140.8250168, 41.7698758]]}, "properties": {"name": "Day 6 移動経路（函館→東京）", "transport": "複合", "_umap_options": {"color": "Green", "weight": 4, "opacity": 0.8, "dashArray": null}}}];
+
+    const GROUP_ICONS = {
+      "観光スポット": "🏛", "食事": "🍽", "宿泊": "🏨",
+      "移動": "🚃", "ショッピング": "🛍", "その他": "📍"
+    };
+
+    function makeMarkerSvg(color, label) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+        <circle cx="14" cy="14" r="13" fill="${color}" stroke="white" stroke-width="2.5"/>
+        <text x="14" y="18" text-anchor="middle" fill="white" font-size="11"
+              font-weight="bold" font-family="sans-serif">${label}</text>
+      </svg>`;
+      return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+    }
+
+    function makePopupContent(props, lat, lon) {
+      const name = props.name || "";
+      const group = props.group || "";
+      const icon = GROUP_ICONS[group] || "📍";
+      const visitTime = props.visit_time || "";
+      const stayMin = props.stay_minutes || "";
+      const desc = (props.description || "").replace(/\n/g, "<br>");
+      const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(name)}/@${lat},${lon},17z`;
+      let html = `<div class="popup"><b>${icon} ${name}</b>`;
+      if (group) html += `<br><span class="sub">${group}</span>`;
+      const times = [visitTime ? `🕐 ${visitTime}` : "", stayMin ? `⏱ ${stayMin}分` : ""].filter(Boolean);
+      if (times.length) html += `<br>${times.join(" ")}`;
+      if (desc) html += `<hr>${desc}`;
+      html += `<hr><a href="${mapsUrl}" target="_blank">📍 Google Mapsで開く →</a>`;
+      html += "</div>";
+      return html;
+    }
+
+    function getDirectionsMode(transport) {
+      if (!transport) return null;
+      if (/電車|鉄道|列車|新幹線/.test(transport) && !/船|フェリー/.test(transport)) return "TRANSIT";
+      if (/^(自動車|車|ドライブ)$/.test(transport)) return "DRIVING";
+      if (/^徒歩$/.test(transport)) return "WALKING";
+      return null;
+    }
+
+    function addPolyline(map, coords, umap) {
+      const path = coords.map(([lon, lat]) => ({ lat, lng: lon }));
+      const dashSymbol = umap.dashArray
+        ? [{ icon: { path: "M 0,-1 0,1", strokeOpacity: 1, scale: 3 }, offset: "0", repeat: "12px" }]
+        : undefined;
+      new google.maps.Polyline({
+        path, map,
+        strokeColor: umap.color || "Gray",
+        strokeWeight: umap.weight || 3,
+        strokeOpacity: dashSymbol ? 0 : (umap.opacity || 0.7),
+        icons: dashSymbol,
+      });
+    }
+
+    function addRoute(map, coords, props) {
+      const umap = props._umap_options || {};
+      const mode = getDirectionsMode(props.transport);
+      if (!mode) { addPolyline(map, coords, umap); return; }
+
+      const origin = { lat: coords[0][1], lng: coords[0][0] };
+      const dest = { lat: coords[coords.length - 1][1], lng: coords[coords.length - 1][0] };
+      const waypoints = coords.slice(1, -1).map(([lon, lat]) => ({
+        location: new google.maps.LatLng(lat, lon), stopover: false,
+      }));
+
+      new google.maps.DirectionsService().route({
+        origin, destination: dest, waypoints,
+        travelMode: google.maps.TravelMode[mode],
+        optimizeWaypoints: false,
+      }, (result, status) => {
+        if (status === "OK") {
+          new google.maps.DirectionsRenderer({
+            map, directions: result, suppressMarkers: true,
+            polylineOptions: {
+              strokeColor: umap.color || "DarkGray",
+              strokeWeight: umap.weight || 3,
+              strokeOpacity: umap.opacity || 0.7,
+            },
+          });
+        } else {
+          addPolyline(map, coords, umap);
+        }
+      });
+    }
+
+    function initMap() {
+      const map = new google.maps.Map(document.getElementById("map"), {
+        mapTypeId: "roadmap",
+        mapTypeControl: true,
+        fullscreenControl: true,
+      });
+      const infoWindow = new google.maps.InfoWindow();
+      const bounds = new google.maps.LatLngBounds();
+
+      const points = FEATURES.filter(f => f.geometry.type === "Point");
+      const lines = FEATURES.filter(f => f.geometry.type === "LineString");
+
+      for (const f of lines) {
+        addRoute(map, f.geometry.coordinates, f.properties || {});
+        f.geometry.coordinates.forEach(([lon, lat]) => bounds.extend({ lat, lng: lon }));
+      }
+
+      const sorted = [...points].sort((a, b) =>
+        (a.properties?.order || 0) - (b.properties?.order || 0)
+      );
+      for (const f of sorted) {
+        const [lon, lat] = f.geometry.coordinates;
+        bounds.extend({ lat, lng: lon });
+        const props = f.properties || {};
+        const color = (props._umap_options || {}).color || "Blue";
+        const order = props.order || "";
+        const marker = new google.maps.Marker({
+          position: { lat, lng: lon }, map,
+          title: props.name || "",
+          icon: {
+            url: makeMarkerSvg(color, order),
+            scaledSize: new google.maps.Size(28, 28),
+            anchor: new google.maps.Point(14, 14),
+          },
+        });
+        marker.addListener("click", () => {
+          infoWindow.setContent(makePopupContent(props, lat, lon));
+          infoWindow.open(map, marker);
+        });
+      }
+
+      if (!bounds.isEmpty()) map.fitBounds(bounds);
+    }
+  </script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPRJUGIu40HZyc1Sr_IY3Gg2JKXwaxXnk&callback=initMap&language=ja&region=JP"
+    async defer></script>
 </body>
-<script>
-    
-    
-            var map_48f8c7fbbc78ed74262ce2fa85963e5d = L.map(
-                "map_48f8c7fbbc78ed74262ce2fa85963e5d",
-                {
-                    center: [0.0, 0.0],
-                    crs: L.CRS.EPSG3857,
-                    ...{
-  "zoom": 1,
-  "zoomControl": true,
-  "preferCanvas": false,
-}
-
-                }
-            );
-
-            
-
-        
-    
-            var tile_layer_05e5f58786e4a3e8016fd7ec336f6277 = L.tileLayer(
-                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                {
-  "minZoom": 0,
-  "maxZoom": 18,
-  "maxNativeZoom": 18,
-  "noWrap": false,
-  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
-  "subdomains": "abc",
-  "detectRetina": false,
-  "tms": false,
-  "opacity": 1,
-}
-
-            );
-        
-    
-            tile_layer_05e5f58786e4a3e8016fd7ec336f6277.addTo(map_48f8c7fbbc78ed74262ce2fa85963e5d);
-        
-    
-            var poly_line_5c8ddc5b8d8689f317141fde66c55698 = L.polyline(
-                [[42.786787, 141.6829598], [43.0625537, 141.3536448], [43.0639655, 141.3480242], [43.0714021, 141.3690082]],
-                {"bubblingMouseEvents": true, "color": "Green", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "Green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
-            ).addTo(map_48f8c7fbbc78ed74262ce2fa85963e5d);
-        
-    
-            poly_line_5c8ddc5b8d8689f317141fde66c55698.bindTooltip(
-                `<div>
-                     Day A-1 移動経路
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-            var poly_line_c2fc38a435782df709d46e57345c5395 = L.polyline(
-                [[43.052234, 141.49706], [42.5591, 141.3568]],
-                {"bubblingMouseEvents": true, "color": "Green", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "Green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 4}
-            ).addTo(map_48f8c7fbbc78ed74262ce2fa85963e5d);
-        
-    
-            poly_line_c2fc38a435782df709d46e57345c5395.bindTooltip(
-                `<div>
-                     Day A-3 移動経路
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-            var marker_408c5aee14230a17c4165db49d692039 = L.marker(
-                [43.0460191, 141.4985449],
-                {
-}
-            ).addTo(map_48f8c7fbbc78ed74262ce2fa85963e5d);
-        
-    
-            var div_icon_8371341a9d3d9ae310b680e738a975ed = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e1\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_90041f7a4ccbea0aec18fa063839ae94 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_9ab3d3f2c685a9d6ff9087cd56c348ba = $(`<div id="html_9ab3d3f2c685a9d6ff9087cd56c348ba" style="width: 100.0%; height: 100.0%;"><b>🏛 北海道開拓の村</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>🕐 09:30 ⏱ 420分<br><hr style='margin:4px 0'>最重要聖地。全52棟のうち多数の建物がほぼそのまま登場。旧武器庫、旧網走刑務所庁舎、旧農商務省地質調査所など多数<br><a href="https://www.google.com/maps/search/%E5%8C%97%E6%B5%B7%E9%81%93%E9%96%8B%E6%8B%93%E3%81%AE%E6%9D%91/@43.0460191,141.4985449,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_90041f7a4ccbea0aec18fa063839ae94.setContent(html_9ab3d3f2c685a9d6ff9087cd56c348ba);
-            
-        
-
-        marker_408c5aee14230a17c4165db49d692039.bindPopup(popup_90041f7a4ccbea0aec18fa063839ae94)
-        ;
-
-        
-    
-    
-            marker_408c5aee14230a17c4165db49d692039.bindTooltip(
-                `<div>
-                     1. 北海道開拓の村
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_408c5aee14230a17c4165db49d692039.setIcon(div_icon_8371341a9d3d9ae310b680e738a975ed);
-            
-    
-            var marker_e277dc33f98746de0dabb97bbcfd28eb = L.marker(
-                [43.052234, 141.49706],
-                {
-}
-            ).addTo(map_48f8c7fbbc78ed74262ce2fa85963e5d);
-        
-    
-            var div_icon_bfec48767a67be74edbe01caf5d0ee82 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e2\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_039d707b5fbcc77e03e81a256af45b22 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_53361f295b1afb16b6c0e99e1db8126c = $(`<div id="html_53361f295b1afb16b6c0e99e1db8126c" style="width: 100.0%; height: 100.0%;"><b>🏛 北海道博物館</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>🕐 09:30 ⏱ 135分<br><hr style='margin:4px 0'>アイヌ文化の常設展示、ゴールデンカムイ関連資料充実。開拓の村に隣接<br><a href="https://www.google.com/maps/search/%E5%8C%97%E6%B5%B7%E9%81%93%E5%8D%9A%E7%89%A9%E9%A4%A8/@43.052234,141.49706,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_039d707b5fbcc77e03e81a256af45b22.setContent(html_53361f295b1afb16b6c0e99e1db8126c);
-            
-        
-
-        marker_e277dc33f98746de0dabb97bbcfd28eb.bindPopup(popup_039d707b5fbcc77e03e81a256af45b22)
-        ;
-
-        
-    
-    
-            marker_e277dc33f98746de0dabb97bbcfd28eb.bindTooltip(
-                `<div>
-                     2. 北海道博物館
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_e277dc33f98746de0dabb97bbcfd28eb.setIcon(div_icon_bfec48767a67be74edbe01caf5d0ee82);
-            
-    
-            var marker_f329073c3a088e78166638e2b3019838 = L.marker(
-                [43.0625537, 141.3536448],
-                {
-}
-            ).addTo(map_48f8c7fbbc78ed74262ce2fa85963e5d);
-        
-    
-            var div_icon_aec3408ed55cd4c7c0e619e7f0455d76 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e3\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_b1310627553d7619dd329d687cc90f5c = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_8655112e1feb11605e694a1073c43344 = $(`<div id="html_8655112e1feb11605e694a1073c43344" style="width: 100.0%; height: 100.0%;"><b>🏛 札幌市時計台</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>⏱ 30分<br><hr style='margin:4px 0'>札幌編（第24巻〜）の重要舞台。外観が作中に忠実に描かれている<br><a href="https://www.google.com/maps/search/%E6%9C%AD%E5%B9%8C%E5%B8%82%E6%99%82%E8%A8%88%E5%8F%B0/@43.0625537,141.3536448,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_b1310627553d7619dd329d687cc90f5c.setContent(html_8655112e1feb11605e694a1073c43344);
-            
-        
-
-        marker_f329073c3a088e78166638e2b3019838.bindPopup(popup_b1310627553d7619dd329d687cc90f5c)
-        ;
-
-        
-    
-    
-            marker_f329073c3a088e78166638e2b3019838.bindTooltip(
-                `<div>
-                     3. 札幌市時計台
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_f329073c3a088e78166638e2b3019838.setIcon(div_icon_aec3408ed55cd4c7c0e619e7f0455d76);
-            
-    
-            var marker_fec6cde36710b25494802a7f666bd349 = L.marker(
-                [43.0714021, 141.3690082],
-                {
-}
-            ).addTo(map_48f8c7fbbc78ed74262ce2fa85963e5d);
-        
-    
-            var div_icon_5a9615be58239f52fda83914033d594c = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e4\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_dec01fde715cff6a8d8b4a9c420b18ff = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_d756a3987c8b215340ac80172b93f74d = $(`<div id="html_d756a3987c8b215340ac80172b93f74d" style="width: 100.0%; height: 100.0%;"><b>🏛 サッポロビール博物館</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>⏱ 60分<br><hr style='margin:4px 0'>札幌編クライマックスの舞台。建物外観が作中そのまま。プレミアムツアーがおすすめ<br><a href="https://www.google.com/maps/search/%E3%82%B5%E3%83%83%E3%83%9D%E3%83%AD%E3%83%93%E3%83%BC%E3%83%AB%E5%8D%9A%E7%89%A9%E9%A4%A8/@43.0714021,141.3690082,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_dec01fde715cff6a8d8b4a9c420b18ff.setContent(html_d756a3987c8b215340ac80172b93f74d);
-            
-        
-
-        marker_fec6cde36710b25494802a7f666bd349.bindPopup(popup_dec01fde715cff6a8d8b4a9c420b18ff)
-        ;
-
-        
-    
-    
-            marker_fec6cde36710b25494802a7f666bd349.bindTooltip(
-                `<div>
-                     4. サッポロビール博物館
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_fec6cde36710b25494802a7f666bd349.setIcon(div_icon_5a9615be58239f52fda83914033d594c);
-            
-    
-            var marker_65285b62caf543ac7d13d56311952d5b = L.marker(
-                [42.5591, 141.3568],
-                {
-}
-            ).addTo(map_48f8c7fbbc78ed74262ce2fa85963e5d);
-        
-    
-            var div_icon_22e21e5f20fa76881da1b3fb8954b2d8 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e5\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_90360bd3ec72f33c34aad452360c2159 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_479cf76731b96ddaae17bbf403cf22bb = $(`<div id="html_479cf76731b96ddaae17bbf403cf22bb" style="width: 100.0%; height: 100.0%;"><b>🏛 ウポポイ（民族共生象徴空間）</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br>🕐 14:30 ⏱ 135分<br><hr style='margin:4px 0'>2020年開館の国立アイヌ博物館。作品世界の理解を深めるなら必訪（札幌から南へ約60分・白老）<br><a href="https://www.google.com/maps/search/%E3%82%A6%E3%83%9D%E3%83%9D%E3%82%A4%EF%BC%88%E6%B0%91%E6%97%8F%E5%85%B1%E7%94%9F%E8%B1%A1%E5%BE%B4%E7%A9%BA%E9%96%93%EF%BC%89/@42.5591,141.3568,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_90360bd3ec72f33c34aad452360c2159.setContent(html_479cf76731b96ddaae17bbf403cf22bb);
-            
-        
-
-        marker_65285b62caf543ac7d13d56311952d5b.bindPopup(popup_90360bd3ec72f33c34aad452360c2159)
-        ;
-
-        
-    
-    
-            marker_65285b62caf543ac7d13d56311952d5b.bindTooltip(
-                `<div>
-                     5. ウポポイ（民族共生象徴空間）
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_65285b62caf543ac7d13d56311952d5b.setIcon(div_icon_22e21e5f20fa76881da1b3fb8954b2d8);
-            
-    
-            var marker_e62ebc3cb77c82ee1e9a382e9fd6a2bc = L.marker(
-                [43.0639655, 141.3480242],
-                {
-}
-            ).addTo(map_48f8c7fbbc78ed74262ce2fa85963e5d);
-        
-    
-            var div_icon_e5927c0713d18765f99dca4b99873654 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Blue;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e6\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_193bdf245f640932785220b0146b3bcc = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_fa755cc6ccc79834e385cda0c8e13906 = $(`<div id="html_fa755cc6ccc79834e385cda0c8e13906" style="width: 100.0%; height: 100.0%;"><b>🏛 旧道庁赤レンガ庁舎</b><br><span style='color:#666;font-size:11px'>観光スポット</span><br><hr style='margin:4px 0'>外観・雰囲気を楽しむ。時計台から徒歩圏内<br><a href="https://www.google.com/maps/search/%E6%97%A7%E9%81%93%E5%BA%81%E8%B5%A4%E3%83%AC%E3%83%B3%E3%82%AC%E5%BA%81%E8%88%8E/@43.0639655,141.3480242,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_193bdf245f640932785220b0146b3bcc.setContent(html_fa755cc6ccc79834e385cda0c8e13906);
-            
-        
-
-        marker_e62ebc3cb77c82ee1e9a382e9fd6a2bc.bindPopup(popup_193bdf245f640932785220b0146b3bcc)
-        ;
-
-        
-    
-    
-            marker_e62ebc3cb77c82ee1e9a382e9fd6a2bc.bindTooltip(
-                `<div>
-                     6. 旧道庁赤レンガ庁舎
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_e62ebc3cb77c82ee1e9a382e9fd6a2bc.setIcon(div_icon_e5927c0713d18765f99dca4b99873654);
-            
-    
-            var marker_47b5fe728ad56d364df75018ebebca38 = L.marker(
-                [42.786787, 141.6829598],
-                {
-}
-            ).addTo(map_48f8c7fbbc78ed74262ce2fa85963e5d);
-        
-    
-            var div_icon_3b5bda79b59d1660afcb85a59688c1f5 = L.divIcon({
-  "html": "\n    \u003cdiv style=\"\n        background-color: Gray;\n        width: 26px;\n        height: 26px;\n        border-radius: 50%;\n        border: 2px solid white;\n        box-shadow: 0 1px 4px rgba(0,0,0,0.4);\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 11px;\n        font-weight: bold;\n        font-family: sans-serif;\n        line-height: 1;\n    \"\u003e7\u003c/div\u003e\n    ",
-  "iconSize": [26, 26],
-  "iconAnchor": [13, 13],
-  "className": "empty",
-});
-        
-    
-        var popup_4a83642cfbabb5ca7ab3364b647811a0 = L.popup({
-  "maxWidth": 240,
-});
-
-        
-            
-                var html_3d5136d9fcebbfc0195d7f2361ee93fb = $(`<div id="html_3d5136d9fcebbfc0195d7f2361ee93fb" style="width: 100.0%; height: 100.0%;"><b>📍 新千歳空港</b><br><span style='color:#666;font-size:11px'>その他</span><br><hr style='margin:4px 0'>東京発着の拠点空港。快速エアポートで札幌駅まで約40分<br><a href="https://www.google.com/maps/search/%E6%96%B0%E5%8D%83%E6%AD%B3%E7%A9%BA%E6%B8%AF/@42.786787,141.6829598,17z" target="_blank" style="font-size:11px;color:#1a73e8;text-decoration:none">📍 Google Mapsで開く →</a></div>`)[0];
-                popup_4a83642cfbabb5ca7ab3364b647811a0.setContent(html_3d5136d9fcebbfc0195d7f2361ee93fb);
-            
-        
-
-        marker_47b5fe728ad56d364df75018ebebca38.bindPopup(popup_4a83642cfbabb5ca7ab3364b647811a0)
-        ;
-
-        
-    
-    
-            marker_47b5fe728ad56d364df75018ebebca38.bindTooltip(
-                `<div>
-                     7. 新千歳空港
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
-    
-                marker_47b5fe728ad56d364df75018ebebca38.setIcon(div_icon_3b5bda79b59d1660afcb85a59688c1f5);
-            
-    
-            map_48f8c7fbbc78ed74262ce2fa85963e5d.fitBounds(
-                [[42.786787, 141.6829598], [43.0625537, 141.3536448], [43.0639655, 141.3480242], [43.0714021, 141.3690082], [43.052234, 141.49706], [42.5591, 141.3568], [43.0460191, 141.4985449], [43.052234, 141.49706], [43.0625537, 141.3536448], [43.0714021, 141.3690082], [42.5591, 141.3568], [43.0639655, 141.3480242], [42.786787, 141.6829598]],
-                {}
-            );
-        
-</script>
 </html>
